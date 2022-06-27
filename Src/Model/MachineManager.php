@@ -21,6 +21,25 @@ class MachineManager
 
     /************************************************************************************/
 
+    public function getMachine($id)
+    {
+        $ch = 'SELECT nom_machine
+               FROM machine
+               WHERE id_machine = :id_machine';
+
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_machine', $id, PDO::PARAM_INT);
+        $request->execute();
+
+        $result = $request->fetch(PDO::FETCH_ASSOC);
+
+        $machine = new Machine();
+        $machine->id = $id;
+        $machine->name = $result['nom_machine'];
+    }
+
+    /************************************************************************************/
+
     public function getMachinesFromProdLine(int $prodLineId)
     {
         $ch = 'SELECT m.id_machine, m.nom_machine

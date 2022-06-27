@@ -13,55 +13,48 @@
 
     <table>
         <?php
-            $year = 2022;
-    
-            $months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
-    
             // Print the months
             echo('<thead>');
             echo('<th></th>');
-    
+
             for($i = 0; $i < 12; $i++) echo('<th>'.$months[$i].'</th>');
-    
+
             echo('</thead>');
-    
+
             // Print the days
             echo('<tbody id="dates">');
-    
+
             for($i = 1; $i <= 31; $i++)
             {
-                echo '<tr>';
-                echo '<th>'.$i.'</th>';
-    
+                echo '<tr><th>'.$i.'</th>';
+
                 for($j = 1; $j <= 12; $j++)
                 {
                     // Allow to correctly convert the day index to date
-                    $stringToAddi = ''; 
+                    $stringToAddi = '';
                     if($i < 10) $stringToAddi = '0';
-                    
+
                     // Allow to correctly convert the month index to date
                     $stringToAddj = '';
                     if($j < 10) $stringToAddj = '0';
-    
-                    $actualDate = date_create($year.'-'.$stringToAddj.$j.'-'.$stringToAddi.$i);
-                    $tdId= $year.'-'.$stringToAddj.$j.'-'.$stringToAddi.$i;
-                    
-                    echo '<td id="'.$tdId.'">';
-                    echo '</td>';
+
+                    $tdId = $year.'-'.$stringToAddj.$j.'-'.$stringToAddi.$i;
+
+                    echo '<td id="'.$tdId.'"></td>';
                 }
-    
+
                 echo '</tr>';
             }
-    
+
             echo('</tbody>');
         ?>
-    
+
         <script>
             printTasks(<?php echo json_encode($tasks); ?>);
             printCalendarColors(<?php echo json_encode($reservations); ?>);
 
             var legends = document.getElementsByClassName("legend-color");
-            
+
             for(let i = 0; i < legends.length; i++)
             {
                 legends[i].style['background-color'] = legends[i].id;

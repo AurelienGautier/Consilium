@@ -18,14 +18,26 @@
         </div>
 
         <div class="nav-button">
-            <a class="nav-button" href="index.php?action=printCalendar">Afficher le calendrier</a>
+            <a class="nav-button" href="index.php?action=printCalendar">Affichage annuel</a>
             <ul>
-                <li><a href="index.php?action=printCalendar&lineId=1">Poches</a></li>
-                <li><a href="index.php?action=printCalendar&lineId=2">Ineurope</a></li>
-                <li><a href="index.php?action=printCalendar&lineId=3">Uniject</a></li>
-                <li><a href="index.php?action=printCalendar&lineId=4">Ampoules</a></li>
-                <li><a href="index.php?action=printCalendar&lineId=5">Autoclaves</a></li>
-                <li><a href="index.php?action=printCalendar&lineId=6">Utilité</a></li>
+                <?php
+                    foreach($lines as $line)
+                    {
+                        echo '<li><a href=index.php?action=printCalendar&lineId='.$line->id.'>'.$line->name.'</a></li>';
+                    }
+                ?>
+            </ul>
+        </div>
+
+        <div class="nav-button">
+            <a class="nav-button">Affichage mensuel</a>
+            <ul>
+                <?php
+                    foreach($months as $key => $month)
+                    {
+                        echo '<li><a class="nav-button" href="index.php?action=printMonthlyCalendar&month='.($key+1).'">'.$month.'</a></li>';
+                    }
+                ?>
             </ul>
         </div>
 

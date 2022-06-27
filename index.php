@@ -1,47 +1,73 @@
 <?php
-
+require_once('Src/Controller/Header.php');
 require_once('Src/Controller/Reservation/ReservationAdd.php');
 require_once('Src/Controller/Reservation/ReservationChoice.php');
 require_once('Src/Controller/Task/TaskAdd.php');
 require_once('Src/Controller/Calendar.php');
+require_once('Src/Controller/MonthlyCalendar.php');
+require_once('Src/Controller/Task/PrintTask.php');
 require_once('Src/Controller/DataAdd.php');
 
-require('Template/header.php');
+(new Header())->execute();
 
-if(isset($_GET['action']))
+try
 {
-    if($_GET['action'] == 'addReservation')
+    if(isset($_GET['action']))
     {
-        if(isset($_GET['step']))
+        if($_GET['action'] == 'addReservation')
         {
-            (new ReservationAdd())->execute($_GET['step'], $_POST);
+            if(isset($_GET['step']))
+            {
+                (new ReservationAdd())->execute($_GET['step'], $_POST);
+            }
+        }
+        else if($_GET['action'] == 'reservationChoice')
+        {
+            (new ReservationChoice())->execute();
+        }
+        else if($_GET['action'] == 'addTask')
+        {
+            if(isset($_GET['reservationId']) && isset($_GET['step']))
+            {
+                (new TaskAdd())->execute($_GET['step'], $_GET['reservationId'], $_POST);
+            }
+        }
+        else if($_GET['action'] == 'printCalendar')
+        {
+            (new Calendar())->execute();
+        }
+        else if($_GET['action'] == 'printMonthlyCalendar')
+        {
+            (new MonthlyCalendar())->execute($_GET['month']);
+        }
+        else if($_GET['action'] == 'printTask')
+        {
+            if(isset($_GET['taskId']))
+            {
+                (new printTask())->execute($_GET['taskId']);
+            }
+        }
+        else if($_GET['action'] == 'addData')
+        {
+            if(isset($_GET['step']) && isset($_GET['dataToAdd']))
+            {
+                (new DataAdd())->execute($_GET['step'], $_GET['dataToAdd'], $_POST);
+            }
+        }
+        else {
+            throw new Exception('404 Page non trouvée.');
         }
     }
-    else if($_GET['action'] == 'reservationChoice')
+    else
     {
-        (new ReservationChoice())->execute();
-    }
-    else if($_GET['action'] == 'addTask')
-    {
-        if(isset($_GET['reservationId']) && isset($_GET['step']))
-        {
-            (new TaskAdd())->execute($_GET['step'], $_GET['reservationId'], $_POST);
-        }
-    }
-    else if($_GET['action'] == 'printCalendar')
-    {
-        (new Calendar())->execute();
-    }
-    else if($_GET['action'] == 'addData')
-    {
-        if(isset($_GET['step']) && isset($_GET['dataToAdd']))
-        {
-            (new DataAdd())->execute($_GET['step'], $_GET['dataToAdd'], $_POST);
-        }
+        require('Template/home.php');
     }
 }
-else
+catch(Exception $e)
 {
-    require('Template/home.php');
+    $errorMessage = $e->getMessage();
+
+    require('Template/Error.php');
 }
+
 require('Template/footer.php');

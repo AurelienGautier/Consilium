@@ -11,6 +11,8 @@ class Calendar
         $reservations = (new ReservationManager())->getReservations();
         $tasks = (new TaskManager())->getTasks();
         $lines = array();
+        $months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
+        $year = 2022;
 
         for($i = 0; $i < count($reservations); $i++)
         {

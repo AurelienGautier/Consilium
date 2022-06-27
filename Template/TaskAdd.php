@@ -31,6 +31,18 @@
     </select>
     <br/>
 
+    <label for="supplier">Intervention d'un fournisseur</label>
+    <select id="supplier" name="supplier">
+        <option value="">Aucun</option>
+        <?php
+            foreach($suppliers as $supplier)
+            {
+                echo '<option value='.$supplier->id.'>'.$supplier->name.'</option>';
+            }
+        ?>
+    </select>
+    <br/>
+
     <!-- Date de l'arrêt -->
     <label for="taskDate">Date du début de l'arrêt</label>
     <input type="date" id="taskDate" name="taskDate" min=<?php echo $reservation->startDate;?> max=<?php echo $reservation->endDate; ?> />
@@ -48,7 +60,3 @@
 
     <input type="submit" value="Ajouter"/>
 </form>
-
-<script>
-    addSupplier(<?php echo json_encode($suppliers); ?>);
-</script>

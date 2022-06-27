@@ -46,6 +46,28 @@ class TaskTypeManager
 
     /************************************************************************************/
 
+    public function getTaskType($id)
+    {
+        $ch = 'SELECT nom_typeTache
+               FROM typetache
+               WHERE id_typeTache = :id_typeTache';
+
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_typeTache', $id, PDO::PARAM_INT);
+        $request->execute();
+
+        $result = $request->fetch();
+
+        $taskType = new TaskType();
+
+        $taskType->id = $id;
+        $taskType->name = $result['nom_typeTache'];
+
+        return $taskType;
+    }
+
+    /************************************************************************************/
+
     public function insertTaskType($name)
     {
         $ch = 'INSERT INTO typetache (nom_typeTache) VALUES (:nom_typeTache)';

@@ -24,7 +24,8 @@ class SupplierManager
     public function getSuppliers()
     {
         $ch = 'SELECT id_fournisseur, nom_fournisseur
-               FROM fournisseur';
+               FROM fournisseur
+               ORDER BY nom_fournisseur ASC';
 
         $request = $this->db->prepare($ch);
         $request->execute();
@@ -42,6 +43,32 @@ class SupplierManager
         }
 
         return $suppliers;
+    }
+
+    /************************************************************************************/
+
+    public function getSupplier($id)
+    {
+        if($id == null) return null;
+
+        $ch = 'SELECT nom_fournisseur
+               FROM fournisseur
+               WHERE id_fournisseur = :id_fournisseur';
+
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_fournisseur', $id, PDO::PARAM_INT);
+        $request->execute();
+
+        $result = $request->fetch(PDO::FETCH_ASSOC);
+
+        $supplier = new Supplier();
+
+        $supplier = new Supplier();
+
+        $supplier->id = $id;
+        $supplier->name = $result['nom_fournisseur'];
+
+        return $supplier;
     }
 
     /************************************************************************************/

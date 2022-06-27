@@ -1,14 +1,5 @@
-function changeType(field)
-{
-    var taskName = document.getElementById(field);
-    taskName.innerHTML = '<input class="changing" placeholder="Entrer le nouveau nom" />';
-}
-
-/************************************************************************************/
-
 function printTasks(tasks)
 {
-    console.log(tasks);
     for(let i = 0; i < tasks.length; i++)
     {
         var actualDate = new Date(tasks[i].startDate);
@@ -20,11 +11,11 @@ function printTasks(tasks)
 
             if(dateToString(actualDate) == tasks[i].startDate)
             {
-                newTd.textContent = tasks[i].name;
+                newTd.innerHTML = '<a href=index.php?action=printTask&taskId='+tasks[i].id+'>'+tasks[i].name+'</a>';
             }
             else
             {
-                newTd.textContent = '-----';
+                newTd.textContent += '-----';
             }
 
             actualDate.setDate(actualDate.getDate() + 1);
@@ -48,6 +39,106 @@ function printCalendarColors(reservations)
             actualTd.style['background-color'] = reservations[i].color;
 
             actualDate.setDate(actualDate.getDate() + 1);
+        }
+    }
+}
+
+/************************************************************************************/
+
+function printMonthlyTasks(reservations, tasks, lines, month)
+{
+    tasks = selectReservations(tasks, month);
+    resrvations = selectReservations(reservations, month);
+
+    for(let i = 0; i < tasks.length; i++)
+    {
+        var actualDate = new Date(tasks[i].startDate);
+        var endDate = new Date(tasks[i].endDate);
+
+        while(actualDate <= endDate)
+        {
+            let actualTr = document.getElementById(dateToString(actualDate));
+
+            let actualTd = actualTr.querySelector('.' + selectLineNameFromTask(tasks[i], reservations, lines));
+
+            if(dateToString(actualDate) == tasks[i].startDate)
+            {
+                actualTd.innerHTML = '<a href=index.php?action=printTask&taskId='+tasks[i].id+'>'+tasks[i].name+'</a>';
+            }
+            else
+            {
+                actualTd.textContent = '-----';
+            }
+
+            actualDate.setDate(actualDate.getDate() + 1);
+        }
+    }
+}
+
+/************************************************************************************/
+
+function printMonthlyCalendarColors(reservations, lines, month)
+{
+    reservations = selectReservations(reservations, month);
+
+    for(let i = 0; i < reservations.length; i++)
+    {
+        var actualDate = new Date(reservations[i].startDate);
+        var endDate = new Date(reservations[i].endDate);
+
+        while(actualDate <= endDate)
+        {
+            let actualTr = document.getElementById(dateToString(actualDate));
+
+            let actualTd = actualTr.querySelector('.' + getLineName(reservations[i].prodLineId, lines));
+            actualTd.style['background-color'] = reservations[i].color;
+
+            actualDate.setDate(actualDate.getDate() + 1);
+        }
+    }
+}
+
+/************************************************************************************/
+
+function selectReservations(reservations, month)
+{
+    let reservationsList = [];
+
+    for(let i = 0; i < reservations.length; i++)
+    {
+        let reservDate = new Date(reservations[i].startDate);
+
+        if(reservDate.getMonth() + 1 == month)
+        {
+            reservationsList.push(reservations[i]);
+        }
+    }
+
+    return reservationsList;
+}
+
+/************************************************************************************/
+
+function getLineName(lineId, lines)
+{
+    for(line of lines)
+    {
+        if(line.id === lineId)
+        {
+            return line.name;
+        }
+    }
+}
+
+/************************************************************************************/
+
+function selectLineNameFromTask(task, reservations, lines)
+{
+    for(reservation of reservations)
+    {
+        if(task.reservationId == reservation.id)
+        {
+            return getLineName(reservation.prodLineId, lines);
         }
     }
 }
@@ -100,42 +191,5 @@ function dateToString(date)
 
     return year + '-' + month + '-' + day;
 }
-
-/************************************************************************************/
-//         var supplierList = document.createElement("select");
-//         supplierList.id ="supplierList";
-
-//         for(let i = 0; i < suppliers.length; i++)
-//         {
-//             supplierList[i] = new Option(suppliers[i]['nom_fournisseur'], suppliers['id_fournisseur']);
-//         }
-
-//         form.insertBefore(supplierList, supplierNeeded.nextSibling);
-//         form.insertBefore(labelSupplierList, supplierNeeded.nextSibling);
-
-// function addSupplier(suppliers)
-// {
-//     var taskType = document.getElementById("stopType");
-//     taskType.onchange = function() {
-//         if(taskType.value == 2)
-//         {
-//             var form = document.getElementById("formAddTask");
-
-//             var supplierList = document.createElement("select");
-//             supplierList.id = "supplierList";
-
-//             for(let i = 0; i < suppliers.length; i++)
-//             {
-//                 supplierList[i] = new Option(suppliers[i]['nom_fournisseur'], suppliers['id_fournisseur']);
-//             }
-
-//             form.insertBefore();
-//         }
-//         else
-//         {
-
-//         }
-//     }
-// }
 
 /************************************************************************************/
