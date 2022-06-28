@@ -6,19 +6,20 @@ require_once('Src/Model/ProdLineManager.php');
 
 class Calendar
 {
-    public function execute()
-    {
-        $reservations = (new ReservationManager())->getReservations();
-        $tasks = (new TaskManager())->getTasks();
-        $lines = array();
-        $months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
-        $year = 2022;
+	public function execute()
+	{
+		$reservations = (new ReservationManager())->getReservations();
+		$tasks = (new TaskManager())->getTasks();
+		$lines = array();
+		
+		for($i = 0; $i < count($reservations); $i++)
+		{
+			$lines[$i] = (new ProdLineManager())->getProdLine($reservations[$i]->prodLineId);
+		}
+		
+		$months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
+		$year = 2022;
 
-        for($i = 0; $i < count($reservations); $i++)
-        {
-            $lines[$i] = (new ProdLineManager())->getProdLine($reservations[$i]->prodLineId);
-        }
-
-        require('Template/PrintCalendar.php');
-    }
+		require('Template/PrintCalendar.php');
+	}
 }
