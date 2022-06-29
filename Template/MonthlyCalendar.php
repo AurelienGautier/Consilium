@@ -1,47 +1,52 @@
+<div id="nav-link">
+    <div id="previous"><button>Précédent</button></div>
+    <div id="next"><button>Suivant</button></div>
+</div>
+
 <table>
-        <?php
-            $months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
+    <caption id="month"></caption>
+    <?php
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th></th>';
 
-            echo '<caption><h1>'.$months[$month-1].'</h1></caption>';
+        foreach($lines as $line)
+        {
+            echo '<th>'.$line->name.'</th>';
+        }
+        echo '</tr>';
+        echo '</thead>';
 
-            $year = 2022;
+        echo '<tbody>';
 
-            echo '<thead>';
-            echo '<tr>';
-                echo '<th></th>';
+        for($i = 1; $i <= 31; $i++)
+        {
+            echo '<tr><th>'.$i.'</th>';
 
-                foreach($lines as $line)
-                {
-                    echo '<th>'.$line->name.'</th>';
-                }
-            echo '</tr>';
-            echo '</thead>';
-
-            echo '<tbody>';
-
-            for($i = 1; $i <= 31; $i++)
+            foreach($lines as $line)
             {
-                // Allow to correctly convert the day index to date
-                $stringToAddi = '';
-                if($i < 10) $stringToAddi = '0';
-
-                $trId = $year.'-'.'0'.$month.'-'.$stringToAddi.$i;
-
-                echo '<tr id='.$trId.'><th>'.$i.'</th>';
-
-                for($j = 0; $j < count($lines); $j++)
-                {
-                    echo '<td class="'.$lines[$j]->name.'"></td>';
-                }
-
-                echo '</tr>';
+                echo '<td class='.$line->name.'></td>';
             }
 
-            echo '</tbody>';
-        ?>
+            echo '</tr>';
+        }
+
+        echo '</tbody>';
+    ?>
 </table>
 
 <script>
-    printMonthlyCalendarColors(<?php echo json_encode($reservations).','.json_encode($lines).','.json_encode($month); ?>);
-    printMonthlyTasks(<?php echo json_encode($reservations).','.json_encode($tasks).','.json_encode($lines).','.json_encode($month); ?>);
+    let tasks = <?php echo json_encode($tasks) ?>;
+    let reservations = <?php echo json_encode($reservations) ?>;
+    let lines = <?php echo json_encode($lines) ?>;
+
+    let calendar = new MonthlyCalendar(tasks, reservations, lines);
+    calendar.load();
+
+    let next = document.getElementById('next');
+    let previous = document.getElementById('previous');
+
+    next.onclick = function() { calendar.changeMonth('next'); }
+    previous.onclick = function() { calendar.changeMonth('previous'); }
+
 </script>

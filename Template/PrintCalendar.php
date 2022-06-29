@@ -12,12 +12,14 @@
 	</div>
 
 	<div id="calendar">
+		
 		<div id="nav-link">
-			<div>Précédent</div>
-			<div>Suivant</div>
+			<div id="previous"><button>Précédent</button></div>
+			<div id="next"><button>Suivant</button></div>
 		</div>
-
+		
 		<table>
+			<caption id="year"></caption>
 			<?php
 				// Print the months
 				echo('<thead>');
@@ -36,16 +38,6 @@
 
 					for($j = 1; $j <= 12; $j++)
 					{
-						// Allow to correctly convert the day index to date
-						$stringToAddi = '';
-						if($i < 10) $stringToAddi = '0';
-
-						// Allow to correctly convert the month index to date
-						$stringToAddj = '';
-						if($j < 10) $stringToAddj = '0';
-
-						$tdId = $year.'-'.$stringToAddj.$j.'-'.$stringToAddi.$i;
-
 						echo '<td></td>';
 					}
 
@@ -55,21 +47,25 @@
 				echo('</tbody>');
 			?>
 
-			<script>
-				let tasks = <?php echo json_encode($tasks); ?>;
-				let reservations = <?php echo json_encode($reservations); ?>;
-				let lines = <?php echo json_encode($lines); ?>;
-
-				calendar = new Calendar(tasks, reservations, lines);
-				calendar.createCellId();
-				
-				calendar.printTasks();
-				calendar.printCalendarColors();
-
-				var legends = document.getElementsByClassName("legend-color");
-
-				for(legend of legends) legend.style['background-color'] = legend.id;
-			</script>
 		</table>
 	</div>
 </div>
+
+<script>
+	let tasks = <?php echo json_encode($tasks); ?>;
+	let reservations = <?php echo json_encode($reservations); ?>;
+	let lines = <?php echo json_encode($lines); ?>;
+
+	calendar = new YearlyCalendar(tasks, reservations, lines);
+	calendar.load();
+
+	let next = document.getElementById("next");
+	let previous = document.getElementById("previous");
+
+	next.onclick = function() { calendar.changeYear('next'); }
+	previous.onclick = function() { calendar.changeYear('previous'); } 
+
+	let legends = document.getElementsByClassName("legend-color");
+
+	for(legend of legends) legend.style['background-color'] = legend.id;
+</script>

@@ -38,7 +38,7 @@ try
         }
         else if($_GET['action'] == 'printMonthlyCalendar')
         {
-            (new MonthlyCalendar())->execute($_GET['month']);
+            (new MonthlyCalendar())->execute();
         }
         else if($_GET['action'] == 'printTask')
         {

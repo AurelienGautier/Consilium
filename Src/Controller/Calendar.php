@@ -18,7 +18,6 @@ class Calendar
 		}
 		
 		$months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
-		$year = 2022;
 
 		require('Template/PrintCalendar.php');
 	}
