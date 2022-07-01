@@ -1,10 +1,9 @@
 class YearlyCalendar 
 {
-	constructor(tasks, reservations, lines)
+	constructor(tasks, reservations)
 	{
 		this.tasks = tasks;
 		this.reservations = reservations;
-		this.lines = lines;
 		this.actualMonth = new Date().getMonth() + 1;
 		this.actualYear = new Date().getFullYear();
 	}
@@ -69,7 +68,7 @@ class YearlyCalendar
 			{
 				let actualTd = document.getElementById(dateToString(actualDate));
 				let actualDiv = actualTd.querySelector('div');
-				actualDiv = actualDiv.querySelector(`.a${tasks[i].reservationId}`); 
+				actualDiv = actualDiv.querySelector(`.a${tasks[i].reservationId}`);
 
 				if(dateToString(actualDate) == tasks[i].startDate)
 				{
@@ -101,17 +100,6 @@ class YearlyCalendar
 		}
 
 		return tasksList;
-	}
-
-	getLineName(lineId)
-	{
-		for(line of this.lines)
-		{
-			if(line.id === lineId)
-			{
-				return line.name;
-			}
-		}
 	}
 
 	createCellId()
@@ -166,7 +154,6 @@ class YearlyCalendar
 		{
 			let monthTd = this.getMonthDiv(i);
 			let monthReservations = this.getReservationsOfMonth(i);
-			console.log(monthReservations);
 
 			for(let j = 0; j < monthTd.length; j++)
 			{

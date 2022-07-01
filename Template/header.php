@@ -20,12 +20,12 @@
 		</div>
 
 		<div class="nav-button">
-			<a class="nav-button" href="index.php?action=printCalendar">Affichage annuel</a>
+			<a class="nav-button" href="index.php?action=printYearlyCalendar">Affichage annuel</a>
 			<ul>
 				<?php
 					foreach($lines as $line)
 					{
-						echo '<li><a href=index.php?action=printCalendar&lineId='.$line->id.'>'.$line->name.'</a></li>';
+						echo '<li><a href=index.php?action=printYearlyCalendar&lineId='.$line->id.'>'.$line->name.'</a></li>';
 					}
 				?>
 			</ul>

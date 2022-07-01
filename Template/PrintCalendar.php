@@ -2,12 +2,15 @@
 	<?php if(isset($lines)) { ?>
 	<div id="legend">
 		<?php
-			for($i = 0; $i < count($reservations); $i++)
+			if(isset($lines))
 			{
-				echo '<div class="legend-pack">';
-				echo '<div class="legend-color" id="'.$reservations[$i]->color.'"></div>';
-				echo $lines[$i]->name;
-				echo '</div>';
+				for($i = 0; $i < count($reservations); $i++)
+				{
+					echo '<div class="legend-pack">';
+					echo '<div class="legend-color" id="'.$reservations[$i]->color.'"></div>';
+					echo $lines[$i]->name;
+					echo '</div>';
+				}
 			}
 		?>
 	</div>
@@ -56,9 +59,8 @@
 <script>
 	let tasks = <?php echo json_encode($tasks); ?>;
 	let reservations = <?php echo json_encode($reservations); ?>;
-	let lines = <?php echo json_encode($lines); ?>;
 
-	calendar = new YearlyCalendar(tasks, reservations, lines);
+	calendar = new YearlyCalendar(tasks, reservations);
 	calendar.load();
 
 	let next = document.getElementById("next");

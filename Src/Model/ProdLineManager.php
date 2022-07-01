@@ -58,11 +58,16 @@ class ProdLineManager
 
         $result = $request->fetch();
 
-        $prodLine = new ProdLine();
-        $prodLine->id = $id;
-        $prodLine->name = $result['nom_ligneProd'];
+        if($result != false)
+        {
+            $prodLine = new ProdLine();
+            $prodLine->id = $id;
+            $prodLine->name = $result['nom_ligneProd'];
+    
+            return $prodLine;
+        }
 
-        return $prodLine;
+        return null;
     }
 
     /************************************************************************************/

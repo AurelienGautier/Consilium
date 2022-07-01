@@ -87,19 +87,24 @@ class TaskManager
 
         $result = $request->fetch(PDO::FETCH_ASSOC);
 
-        $task = new Task();
+        if($result != false)
+        {
+            $task = new Task();
+    
+            $task->id = $id;
+            $task->name = $result['nom_tache'];
+            $task->description = $result['description_tache'];
+            $task->startDate = $result['dateDebut_tache'];
+            $task->endDate = $result['dateFin_tache'];
+            $task->type = $result['id_typeTache'];
+            $task->reservationId = $result['id_reservation'];
+            $task->supplierId = $result['id_fournisseur'];
+            $task->machineId = $result['id_machine'];
+    
+            return $task;
+        }
 
-        $task->id = $id;
-        $task->name = $result['nom_tache'];
-        $task->description = $result['description_tache'];
-        $task->startDate = $result['dateDebut_tache'];
-        $task->endDate = $result['dateFin_tache'];
-        $task->type = $result['id_typeTache'];
-        $task->reservationId = $result['id_reservation'];
-        $task->supplierId = $result['id_fournisseur'];
-        $task->machineId = $result['id_machine'];
-
-        return $task;
+        return null;
     }
 
     /************************************************************************************/
@@ -111,6 +116,7 @@ class TaskManager
                       t.description_tache,
                       t.dateDebut_tache,
                       t.dateFin_tache,
+                      t.id_reservation,
                       t.id_fournisseur,
                       t.id_typeTache,
                       t.id_machine
@@ -136,6 +142,7 @@ class TaskManager
             $tasks[$i]->description = $result[$i]['description_tache'];
             $tasks[$i]->startDate = $result[$i]['dateDebut_tache'];
             $tasks[$i]->endDate = $result[$i]['dateFin_tache'];
+            $tasks[$i]->reservationId = $result[$i]['id_reservation'];
             $tasks[$i]->type = $result[$i]['id_typeTache'];
             $tasks[$i]->supplierId = $result[$i]['id_fournisseur'];
             $tasks[$i]->machineId = $result[$i]['id_machine'];
