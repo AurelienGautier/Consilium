@@ -34,7 +34,10 @@ try
         }
         else if($_GET['action'] == 'printCalendar')
         {
-            (new Calendar())->execute();
+            $lineId = null;
+            if(isset($_GET['lineId'])) $lineId = $_GET['lineId'];
+
+            (new Calendar())->execute($lineId);
         }
         else if($_GET['action'] == 'printMonthlyCalendar')
         {

@@ -85,6 +85,39 @@ class ReservationManager
 
     /************************************************************************************/
 
+    public function getReservationsByLineId($lineId)
+    {
+        $ch = 'SELECT id_reservation,
+                      dateDebut_reservation, 
+                      dateFin_reservation, 
+                      couleur_reservation
+        FROM reservation
+        WHERE id_ligneProd = :id_ligneProd
+        ORDER BY dateDebut_reservation';
+
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_ligneProd', $lineId, PDO::PARAM_INT);
+        $request->execute();
+
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+        $reservations = array();
+
+        for($i = 0; $i < count($result); $i++)
+        {
+            $reservations[$i] = new Reservation();
+            $reservations[$i]->id = $result[$i]['id_reservation'];
+            $reservations[$i]->startDate = $result[$i]['dateDebut_reservation'];
+            $reservations[$i]->endDate = $result[$i]['dateFin_reservation'];
+            $reservations[$i]->color = $result[$i]['couleur_reservation'];
+            $reservations[$i]->prodLineId = $lineId;
+        }
+
+        return $reservations;
+    }
+
+    /************************************************************************************/
+
     public function insertReservation(string $startDate, string $endDate, string $color, int $prodLineId)
     {
         $ch = 'INSERT INTO reservation (dateDebut_reservation, dateFin_reservation, couleur_reservation, id_ligneProd) VALUES

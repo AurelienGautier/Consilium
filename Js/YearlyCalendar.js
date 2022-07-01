@@ -12,8 +12,9 @@ class YearlyCalendar
 	load()
 	{
 		this.createCellId();
-		this.printTasks();
+		this.createDivs();
 		this.printCalendarColors();
+		this.printTasks();
 
 		let year = document.getElementById("year");
 		year.textContent = this.actualYear;
@@ -21,39 +22,12 @@ class YearlyCalendar
 
 	changeYear(moment)
 	{
-        this.emptyCells();
+		this.emptyCells();
 
 		if(moment == 'next') this.actualYear++;
 		if(moment == 'previous') this.actualYear--;
 
 		this.load();
-	}
-
-	printTasks()
-	{
-		let tasks = this.selectReservationsByYear(this.tasks);
-
-		for(let i = 0; i < tasks.length; i++)
-		{
-			let actualDate = new Date(tasks[i].startDate);
-			let endDate = new Date(tasks[i].endDate);
-
-			while(actualDate <= endDate)
-			{
-				let newTd = document.getElementById(dateToString(actualDate));
-
-				if(dateToString(actualDate) == tasks[i].startDate)
-				{
-					newTd.innerHTML = '<a href=index.php?action=printTask&taskId='+tasks[i].id+'>'+tasks[i].name+'</a>';
-				}
-				else
-				{
-					newTd.textContent += '-----';
-				}
-
-				actualDate.setDate(actualDate.getDate() + 1);
-			}
-		}
 	}
 
 	printCalendarColors()
@@ -69,7 +43,42 @@ class YearlyCalendar
 			{
 				let actualTd = document.getElementById(dateToString(actualDate));
 
-				actualTd.style['background-color'] = reservations[i].color;
+				if(actualTd != null)
+				{
+					let actualDiv = actualTd.querySelector('div');
+					actualDiv = actualDiv.querySelector(`.a${reservations[i].id}`);
+	
+					actualDiv.style['background-color'] = reservations[i].color;
+				}
+				
+				actualDate.setDate(actualDate.getDate() + 1);
+			}
+		}
+	}
+
+	printTasks()
+	{
+		let tasks = this.selectReservationsByYear(this.tasks);
+
+		for(let i = 0; i < tasks.length; i++)
+		{
+			let actualDate = new Date(tasks[i].startDate);
+			let endDate = new Date(tasks[i].endDate);
+
+			while(actualDate <= endDate)
+			{
+				let actualTd = document.getElementById(dateToString(actualDate));
+				let actualDiv = actualTd.querySelector('div');
+				actualDiv = actualDiv.querySelector(`.a${tasks[i].reservationId}`); 
+
+				if(dateToString(actualDate) == tasks[i].startDate)
+				{
+					actualDiv.innerHTML = '<a href=index.php?action=printTask&taskId='+tasks[i].id+'>'+tasks[i].name+'</a>';
+				}
+				else
+				{
+					actualDiv.textContent += '-----';
+				}
 
 				actualDate.setDate(actualDate.getDate() + 1);
 			}
@@ -83,8 +92,9 @@ class YearlyCalendar
 		for(let i = 0; i < thingToClassify.length; i++)
 		{
 			let reservDate = new Date(thingToClassify[i].startDate);
+			let endReservDate = new Date(thingToClassify[i].endDate);
 
-			if(reservDate.getFullYear() == this.actualYear)
+			if(this.actualYear >= reservDate.getFullYear() && this.actualYear <= endReservDate.getFullYear())
 			{
 				tasksList.push(thingToClassify[i]);
 			}
@@ -104,17 +114,6 @@ class YearlyCalendar
 		}
 	}
 
-	selectLineNameFromTask(task)
-	{
-		for(reservation of this.reservations)
-		{
-			if(task.reservationId == reservation.id)
-			{
-				return getLineName(reservation.prodLineId, this.lines);
-			}
-		}
-	}
-
 	createCellId()
 	{
 		let dates = document.getElementsByTagName('td');
@@ -130,7 +129,7 @@ class YearlyCalendar
 
 	emptyCells()
 	{
-		let dates = document.getElementsByTagName('td');
+		let dates = document.getElementsByClassName('dayContainer');
 
 		for(let i = 0; i < dates.length; i++)
 		{
@@ -138,6 +137,73 @@ class YearlyCalendar
 			dates[i].innerHTML = '';
 		}
 	}
+
+	getReservationsOfMonth(month)
+	{
+		month = parseInt(month);
+		let reservations = this.selectReservationsByYear(this.reservations);
+		let monthReservations = [];
+
+		for(let i = 0; i < reservations.length; i++)
+		{
+			let startDate = new Date(reservations[i].startDate);
+			let endDate = new Date(reservations[i].endDate);
+
+			if((endDate.getFullYear() == this.actualYear && month >= startDate.getMonth() + 1 && month <= endDate.getMonth() + 1) ||
+			   (endDate.getFullYear() > this.actualYear && month >= startDate.getMonth() + 1) ||
+			   (startDate.getFullYear() < this.actualYear && month <= endDate.getMonth() + 1))
+			{
+				monthReservations.push(reservations[i]); 
+			}
+		}
+
+		return monthReservations;
+	}
+
+	createDivs()
+	{
+		for(let i = 1; i <= 12; i++)
+		{
+			let monthTd = this.getMonthDiv(i);
+			let monthReservations = this.getReservationsOfMonth(i);
+			console.log(monthReservations);
+
+			for(let j = 0; j < monthTd.length; j++)
+			{
+				let width = 100 / monthReservations.length;
+				let height = 22;
+
+				for(let k = 0; k < monthReservations.length; k++)
+				{
+					let newDiv = document.createElement('div');
+					newDiv.className = 'a' + monthReservations[k].id;
+					newDiv.style['width'] = `${width}%`;
+					newDiv.style['height'] = `${height}px`;
+
+					monthTd[j].appendChild(newDiv);
+				}
+			}
+		}
+	}
+
+	getMonthDiv(month)
+	{
+		let tds = document.getElementsByTagName('td');
+		let monthTds = [];
+
+		for(let td of tds)
+		{
+			let tdDate = new Date(td.id);
+
+			if(tdDate.getMonth() + 1 == month)
+			{
+				monthTds.push(td.querySelector('div'));
+			}
+		}
+
+		return monthTds;
+	}
+
 }
 
 /************************************************************************************/

@@ -104,6 +104,48 @@ class TaskManager
 
     /************************************************************************************/
 
+    public function getTasksByLineId($prodLineId)
+    {
+        $ch = 'SELECT t.id_tache,
+                      t.nom_tache,
+                      t.description_tache,
+                      t.dateDebut_tache,
+                      t.dateFin_tache,
+                      t.id_fournisseur,
+                      t.id_typeTache,
+                      t.id_machine
+               FROM tache t
+               INNER JOIN reservation r
+               ON t.id_reservation = r.id_reservation
+               WHERE r.id_ligneProd = :id_ligneProd';
+
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_ligneProd', $prodLineId, PDO::PARAM_INT);
+        $request->execute();
+
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+        $tasks = array();
+
+        for($i = 0; $i < count($result); $i++)
+        {
+            $tasks[$i] = new Task();
+
+            $tasks[$i]->id = $result[$i]['id_tache'];
+            $tasks[$i]->name = $result[$i]['nom_tache'];
+            $tasks[$i]->description = $result[$i]['description_tache'];
+            $tasks[$i]->startDate = $result[$i]['dateDebut_tache'];
+            $tasks[$i]->endDate = $result[$i]['dateFin_tache'];
+            $tasks[$i]->type = $result[$i]['id_typeTache'];
+            $tasks[$i]->supplierId = $result[$i]['id_fournisseur'];
+            $tasks[$i]->machineId = $result[$i]['id_machine'];
+        }
+
+        return $tasks;
+    }
+
+    /************************************************************************************/
+
     public function insertTask($name = null,
                                $description = null,
                                $startDate = null,

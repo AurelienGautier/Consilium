@@ -1,4 +1,5 @@
 <div id="container">
+	<?php if(isset($lines)) { ?>
 	<div id="legend">
 		<?php
 			for($i = 0; $i < count($reservations); $i++)
@@ -10,6 +11,7 @@
 			}
 		?>
 	</div>
+	<?php } ?>
 
 	<div id="calendar">
 		
@@ -38,7 +40,7 @@
 
 					for($j = 1; $j <= 12; $j++)
 					{
-						echo '<td></td>';
+						echo '<td><div class="dayContainer"></div></td>';
 					}
 
 					echo '</tr>';

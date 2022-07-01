@@ -13,6 +13,7 @@ class MonthlyCalendar
 	{
 		this.createCellId();
 		this.printCalendarColors();
+		this.printTasks();
 
 		let months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 		let month = document.getElementById('month');
@@ -62,7 +63,7 @@ class MonthlyCalendar
 
 	printCalendarColors()
 	{
-		reservations = this.selectReservations();
+		reservations = this.selectReservations(this.reservations);
 
 		for(let i = 0; i < reservations.length; i++)
 		{
@@ -84,19 +85,48 @@ class MonthlyCalendar
 		}
 	}
 
-	selectReservations()
+	printTasks()
+	{
+		let tasks = this.selectReservations(this.tasks);
+		let resrvations = this.selectReservations(this.reservations);
+
+		for(let i = 0; i < tasks.length; i++)
+		{
+			let actualDate = new Date(tasks[i].startDate);
+			let endDate = new Date(tasks[i].endDate);
+
+			while(actualDate <= endDate)
+			{
+				let actualTr = document.getElementsByClassName(dateToString(actualDate))[0];
+
+				if(actualTr != null)
+				{
+					let actualTd = actualTr.querySelector('.' + this.selectLineNameFromTask(tasks[i]));
+	
+					if(dateToString(actualDate) == tasks[i].startDate)
+						actualTd.innerHTML = '<a href=index.php?action=printTask&taskId='+tasks[i].id+'>'+tasks[i].name+'</a>';
+					else
+						actualTd.textContent = '-----';
+				}
+
+				actualDate.setDate(actualDate.getDate() + 1);
+			}
+		}
+	}
+
+	selectReservations(thingToClassify)
 	{
 		let reservationsList = [];
 
-		for(let i = 0; i < this.reservations.length; i++)
+		for(let i = 0; i < thingToClassify.length; i++)
 		{
-			let reservDate = new Date(this.reservations[i].startDate);
-			let endReservDate = new Date(this.reservations[i].endDate);
+			let reservDate = new Date(thingToClassify[i].startDate);
+			let endReservDate = new Date(thingToClassify[i].endDate);
 
-			if((reservDate.getMonth() + 1 == this.actualMonth || endReservDate.getMonth() + 1 == this.actualMonth) &&
-				 reservDate.getFullYear() == this.actualYear)
+			if((this.actualMonth >= reservDate.getMonth() + 1 && this.actualMonth <= endReservDate.getMonth() + 1) &&
+				reservDate.getFullYear() == this.actualYear)
 			{
-				reservationsList.push(this.reservations[i]);
+				reservationsList.push(thingToClassify[i]);
 			}
 		}
 
@@ -114,9 +144,20 @@ class MonthlyCalendar
 		}
 	}
 
+	selectLineNameFromTask(task)
+	{
+		for(let reservation of this.reservations)
+		{
+			if(task.reservationId == reservation.id)
+			{
+				return this.getLineName(reservation.prodLineId, this.lines);
+			}
+		}
+	}
+
 	changeMonth(moment)
 	{
-    this.emptyCells();
+	this.emptyCells();
 
 		if(moment == 'next') this.actualMonth++;
 		if(moment == 'previous') this.actualMonth--;
@@ -142,36 +183,3 @@ function isDateValid(date)
 	if(isNaN(Date.parse(date[3]))) return false;
 	return true;
 }
-
-
-// printMonthlyTasks()
-// 	{
-// 		tasks = selectReservations(this.tasks, this.actualMonth);
-// 		resrvations = selectReservations(this.reservations, this.actualMonth);
-
-// 		for(let i = 0; i < this.tasks.length; i++)
-// 		{
-// 			let actualDate = new Date(this.tasks[i].startDate);
-// 			let endDate = new Date(this.tasks[i].endDate);
-
-// 			while(actualDate <= endDate)
-// 			{
-// 				let actualTr = document.getElementById(dateToString(actualDate));
-
-// 				let actualTd = actualTr.querySelector('.' + selectLineNameFromTask(tasks[i]));
-
-// 				if(dateToString(actualDate) == tasks[i].startDate)
-// 				{
-// 					actualTd.innerHTML = '<a href=index.php?action=printTask&taskId='+tasks[i].id+'>'+tasks[i].name+'</a>';
-// 				}
-// 				else
-// 				{
-// 					actualTd.textContent = '-----';
-// 				}
-
-// 				actualDate.setDate(actualDate.getDate() + 1);
-// 			}
-// 		}
-// 	}
-
-
