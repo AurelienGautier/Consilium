@@ -174,3 +174,8 @@ td > a
 {
 	display: flex;
 }
+
+#printData
+{
+	width: 50%;
+}

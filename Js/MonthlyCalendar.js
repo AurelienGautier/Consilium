@@ -30,7 +30,7 @@ class MonthlyCalendar
 
 		for(let i = 1; i < calendarLines.length; i++)
 		{
-			calendarLines[i].className = dateId[3];
+			calendarLines[i].id = dateId[3];
 			dateId = this.incrementDate(dateId);
 		}
 	}
@@ -72,16 +72,26 @@ class MonthlyCalendar
 
 			while(actualDate <= endDate)
 			{
-				let actualTr = document.getElementsByClassName(dateToString(actualDate))[0];
+				let actualTr = document.getElementById(dateToString(actualDate));
 
 				if(actualTr != null)
 				{
-					let actualTd = actualTr.querySelector('.' + this.getLineName(reservations[i].prodLineId));
-					actualTd.style['background-color'] = reservations[i].color;
+					let line = this.getLine(reservations[i].prodLineId);
+					let actualTd = actualTr.querySelector('.' + line.name);
+
+					actualTd.style['background-color'] = line.color;
 				}
 
 				actualDate.setDate(actualDate.getDate() + 1);
 			}
+		}
+	}
+
+	getLine(id)
+	{
+		for(let line of lines)
+		{
+			if(line.id == id) return line;
 		}
 	}
 
@@ -120,11 +130,14 @@ class MonthlyCalendar
 
 		for(let i = 0; i < thingToClassify.length; i++)
 		{
-			let reservDate = new Date(thingToClassify[i].startDate);
-			let endReservDate = new Date(thingToClassify[i].endDate);
+			let startDate = new Date(thingToClassify[i].startDate);
+			let endDate = new Date(thingToClassify[i].endDate);
 
-			if((this.actualMonth >= reservDate.getMonth() + 1 && this.actualMonth <= endReservDate.getMonth() + 1) &&
-				reservDate.getFullYear() == this.actualYear)
+			startDate = {'month' : startDate.getMonth() + 1, 'year' : startDate.getFullYear()};
+			let actualDate = {'month' : this.actualMonth, 'year' : this.actualYear};
+			endDate = {'month' : endDate.getMonth() + 1, 'year' : endDate.getFullYear()};
+
+			if(this.isDateBetween(startDate, actualDate, endDate))
 			{
 				reservationsList.push(thingToClassify[i]);
 			}
@@ -132,6 +145,25 @@ class MonthlyCalendar
 
 		return reservationsList;
 	}
+
+	isDateBetween(date1, dateToVerify, date2)
+	{
+		if(this.isDateHigher(date1, dateToVerify)) return false;
+		if(this.isDateHigher(dateToVerify, date2)) return false;
+		return true;
+	}
+
+	isDateHigher(date1, date2)
+	{
+		if(date1['year'] > date2['year']) return true;
+		if(date1['year'] < date2['year']) return false;
+
+		if(date1['month'] > date2['month']) return true;
+		if(date1['month'] < date2['month']) return false;
+		
+		return false;
+	}
+
 
 	getLineName(lineId)
 	{

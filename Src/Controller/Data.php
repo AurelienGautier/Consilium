@@ -10,7 +10,7 @@ require_once('Src/Model/ProdLineManager.php');
 require_once('Src/Model/MachineManager.php');
 require_once('Src/Model/TaskTypeManager.php');
 
-class DataAdd
+class Data
 {
     /**
      * Execute the differents step to add a data
@@ -19,7 +19,7 @@ class DataAdd
      * @param string $dataToAdd The data we want to add
      * @param array $fields Data from the form : null if the step is form
      */
-    public function execute(string $step, string $dataToAdd, array $fields)
+    public function add(string $step, string $dataToAdd, array $fields)
     {
         if($step == 'form')
         {
@@ -75,7 +75,7 @@ class DataAdd
         }
         else if($dataToAdd == 'prodLine')
         {
-            (new ProdLineManager())->insertProdLine($fields['prodLineName']);
+            (new ProdLineManager())->insertProdLine($fields['prodLineName'], $fields['color']);
         }
         else if($dataToAdd == 'machine')
         {
@@ -84,6 +84,55 @@ class DataAdd
         else if($dataToAdd == 'taskType')
         {
             (new TaskTypeManager())->insertTaskType($fields['taskTypeName']);
+        }
+        else
+        {
+            header('Location:index.php');
+        }
+
+        header('Location:index.php?action=printData&dataToPrint='.$dataToAdd);
+    }
+
+    /**
+     * Print data from db of a chosen category
+     * 
+     * @param string $dataToPrint The category of data we want to print
+     */
+    public function print(string $dataToPrint)
+    {
+        // Print the suppliers
+        if($dataToPrint == 'supplier')
+        {
+            $suppliers = (new SupplierManager())->getSuppliers();
+            require('Template/printData/PrintSuppliers.php');
+        }
+
+        // Print production lines
+        else if($dataToPrint == 'prodLine')
+        {
+            $prodLines = (new ProdLineManager())->getProdLines();
+            require('Template/printData/PrintProdLines.php');
+        }
+
+        // Print machines
+        else if($dataToPrint == 'machine')
+        {
+            $machines = (new MachineManager())->getMachines();
+            $machineProdLines = array();
+
+            foreach($machines as $machine)
+            {
+                array_push($machineProdLines,(new ProdLineManager())->getProdLinesFromMachine($machine->id));
+            }
+
+            require('Template/printData/PrintMachines.php');
+        }
+
+        // Print task types
+        else if($dataToPrint == 'taskType')
+        {
+            $taskTypes = (new TaskTypeManager())->getTaskTypes();
+            require('Template/printData/PrintTaskTypes.php');
         }
         else
         {

@@ -36,7 +36,17 @@
 		</div>
 
 		<div class="nav-button">
-			<a class="nav-button">Ajouter des données</a>
+			<a class="nav-button" href="#">Afficher des données</a>
+			<ul>
+				<li><a href="index.php?action=printData&dataToPrint=supplier">Fournisseurs</a></li>
+				<li><a href="index.php?action=printData&dataToPrint=prodLine">Lignes de production</a></li>
+				<li><a href="index.php?action=printData&dataToPrint=machine">Machines</a></li>
+				<li><a href="index.php?action=printData&dataToPrint=taskType">Types de tâche</a></li>
+			</ul>
+		</div>
+
+		<div class="nav-button">
+			<a class="nav-button" href="#">Ajouter des données</a>
 			<ul>
 				<li><a href="index.php?action=addData&step=form&dataToAdd=supplier">Fournisseur</a></li>
 				<li><a href="index.php?action=addData&step=form&dataToAdd=prodLine">Ligne de production</a></li>

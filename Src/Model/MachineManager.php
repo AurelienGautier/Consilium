@@ -21,6 +21,31 @@ class MachineManager
 
     /************************************************************************************/
 
+    public function getMachines()
+    {
+        $ch = 'SELECT m.id_machine, m.nom_machine
+               FROM machine m';
+
+        $request = $this->db->prepare($ch);
+        $request->execute();
+
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+        $machines = array();
+
+        for($i = 0; $i < count($result); $i++)
+        {
+            $machines[$i] = new Machine();
+
+            $machines[$i]->id = $result[$i]['id_machine'];
+            $machines[$i]->name = $result[$i]['nom_machine'];
+        }
+
+        return $machines;
+    }
+
+    /************************************************************************************/
+
     public function getMachine($id)
     {
         $ch = 'SELECT nom_machine

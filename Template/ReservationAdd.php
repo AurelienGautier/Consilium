@@ -21,10 +21,5 @@
     <input type="date" id="endTaskDate" name="endTaskDate" min=<?php echo date('Y-m-d'); ?> />
     <br/>
 
-    <!-- Couleur sur le calendrier -->
-    <label for="colorOnCalendar">Couleur sur le calendrier</label>
-    <input type="color" id="calendarColor" name="calendarColor"/>
-    <br/>
-
     <input type="submit" value="Choisir"/>
 </form>

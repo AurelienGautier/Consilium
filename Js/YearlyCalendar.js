@@ -1,10 +1,11 @@
 class YearlyCalendar 
 {
-	constructor(tasks, reservations)
+	constructor(tasks, reservations, lines)
 	{
 		this.tasks = tasks;
 		this.reservations = reservations;
-		this.actualMonth = new Date().getMonth() + 1;
+		this.lines = lines;
+
 		this.actualYear = new Date().getFullYear();
 	}
 
@@ -46,8 +47,10 @@ class YearlyCalendar
 				{
 					let actualDiv = actualTd.querySelector('div');
 					actualDiv = actualDiv.querySelector(`.a${reservations[i].id}`);
+
+					let line = this.getLine(reservations[i].prodLineId);
 	
-					actualDiv.style['background-color'] = reservations[i].color;
+					actualDiv.style['background-color'] = line.color;
 				}
 				
 				actualDate.setDate(actualDate.getDate() + 1);
@@ -126,28 +129,6 @@ class YearlyCalendar
 		}
 	}
 
-	getReservationsOfMonth(month)
-	{
-		month = parseInt(month);
-		let reservations = this.selectReservationsByYear(this.reservations);
-		let monthReservations = [];
-
-		for(let i = 0; i < reservations.length; i++)
-		{
-			let startDate = new Date(reservations[i].startDate);
-			let endDate = new Date(reservations[i].endDate);
-
-			if((endDate.getFullYear() == this.actualYear && month >= startDate.getMonth() + 1 && month <= endDate.getMonth() + 1) ||
-			   (endDate.getFullYear() > this.actualYear && month >= startDate.getMonth() + 1) ||
-			   (startDate.getFullYear() < this.actualYear && month <= endDate.getMonth() + 1))
-			{
-				monthReservations.push(reservations[i]); 
-			}
-		}
-
-		return monthReservations;
-	}
-
 	createDivs()
 	{
 		for(let i = 1; i <= 12; i++)
@@ -164,6 +145,7 @@ class YearlyCalendar
 				{
 					let newDiv = document.createElement('div');
 					newDiv.className = 'a' + monthReservations[k].id;
+
 					newDiv.style['width'] = `${width}%`;
 					newDiv.style['height'] = `${height}px`;
 
@@ -173,10 +155,52 @@ class YearlyCalendar
 		}
 	}
 
+	getReservationsOfMonth(month)
+	{
+		month = parseInt(month);
+		let yearReservations = this.selectReservationsByYear(this.reservations);
+		let monthReservations = [];
+
+		for(let i = 0; i < yearReservations.length; i++)
+		{
+			let startDate = new Date(yearReservations[i].startDate);
+			let endDate = new Date(yearReservations[i].endDate);
+
+			startDate = {'month' : startDate.getMonth() + 1, 'year' : startDate.getFullYear()};
+			endDate = {'month' : endDate.getMonth() + 1, 'year' : endDate.getFullYear()};
+			let actualDate = {'month' : month, 'year' : this.actualYear};
+
+			if(this.isDateBetween(startDate, actualDate, endDate))
+			{
+				monthReservations.push(yearReservations[i]);
+			}
+		}
+
+		return monthReservations;
+	}
+
+	isDateBetween(date1, dateToVerify, date2)
+	{
+		if(this.isDateHigher(date1, dateToVerify)) return false;
+		if(this.isDateHigher(dateToVerify, date2)) return false;
+		return true;
+	}
+
+	isDateHigher(date1, date2)
+	{
+		if(date1['year'] > date2['year']) return true;
+		if(date1['year'] < date2['year']) return false;
+
+		if(date1['month'] > date2['month']) return true;
+		if(date1['month'] < date2['month']) return false;
+		
+		return false;
+	}
+
 	getMonthDiv(month)
 	{
 		let tds = document.getElementsByTagName('td');
-		let monthTds = [];
+		let monthDivs = [];
 
 		for(let td of tds)
 		{
@@ -184,13 +208,20 @@ class YearlyCalendar
 
 			if(tdDate.getMonth() + 1 == month)
 			{
-				monthTds.push(td.querySelector('div'));
+				monthDivs.push(td.querySelector('div'));
 			}
 		}
 
-		return monthTds;
+		return monthDivs;
 	}
 
+	getLine(lineId)
+	{
+		for(let line of this.lines)
+		{
+			if(line.id == lineId) return line;
+		}
+	}
 }
 
 /************************************************************************************/

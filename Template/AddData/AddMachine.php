@@ -5,8 +5,8 @@
     <input type='text' id='machineName' name='machineName' required/>
     <br/>
 
-    <label for='prodLine'>Ligne de production de la machine</label>
-    <select>
+    <label for="prodLine">Ligne de production de la machine</label>
+    <select id="prodLine" name="prodLine">
         <?php
             foreach($prodLines as $prodLine)
             {

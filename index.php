@@ -10,7 +10,7 @@ require_once('Src/Controller/ReservationController.php');
 require_once('Src/Controller/TaskController.php');
 require_once('Src/Controller/YearlyCalendar.php');
 require_once('Src/Controller/MonthlyCalendar.php');
-require_once('Src/Controller/DataAdd.php');
+require_once('Src/Controller/Data.php');
 
 (new Header())->execute();
 
@@ -61,11 +61,17 @@ try
                 (new MonthlyCalendar())->execute();
                 break;
 
-            
+            case 'printData':
+                if(isset($_GET['dataToPrint']))
+                {
+                    (new Data())->print($_GET['dataToPrint']);
+                }
+
+            // Vérifier url insert
             case 'addData':
                 if(isset($_GET['step']) && isset($_GET['dataToAdd']))
                 {
-                    (new DataAdd())->execute($_GET['step'], $_GET['dataToAdd'], $_POST);
+                    (new Data())->add($_GET['step'], $_GET['dataToAdd'], $_POST);
                 }
                 break;
 

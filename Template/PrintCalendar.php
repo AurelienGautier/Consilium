@@ -4,11 +4,11 @@
 		<?php
 			if(isset($lines))
 			{
-				for($i = 0; $i < count($reservations); $i++)
+				foreach ($lines as $line)
 				{
 					echo '<div class="legend-pack">';
-					echo '<div class="legend-color" id="'.$reservations[$i]->color.'"></div>';
-					echo $lines[$i]->name;
+					echo '<div class="legend-color" id="'.$line->color.'"></div>';
+					echo $line->name;
 					echo '</div>';
 				}
 			}
@@ -59,8 +59,9 @@
 <script>
 	let tasks = <?php echo json_encode($tasks); ?>;
 	let reservations = <?php echo json_encode($reservations); ?>;
+	let lines = <?php echo json_encode($lines); ?>;
 
-	calendar = new YearlyCalendar(tasks, reservations);
+	calendar = new YearlyCalendar(tasks, reservations, lines);
 	calendar.load();
 
 	let next = document.getElementById("next");
@@ -70,6 +71,5 @@
 	previous.onclick = function() { calendar.changeYear('previous'); } 
 
 	let legends = document.getElementsByClassName("legend-color");
-
 	for(legend of legends) legend.style['background-color'] = legend.id;
 </script>

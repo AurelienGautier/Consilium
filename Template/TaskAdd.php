@@ -44,12 +44,12 @@
     <br/>
 
     <!-- Date de l'arrêt -->
-    <label for="taskDate">Date du début de l'arrêt</label>
+    <label for="taskDate">Date du début de la tâche</label>
     <input type="date" id="taskDate" name="taskDate" min=<?php echo $reservation->startDate;?> max=<?php echo $reservation->endDate; ?> />
     <br/>
 
     <!-- Date de fin de l'arrêt -->
-    <label for="endTaskDate">Date de fin de l'arrêt</label>
+    <label for="endTaskDate">Date de fin de la tâche</label>
     <input type="date" id="endTaskDate" name="endTaskDate" min=<?php echo $reservation->startDate;?> max=<?php echo $reservation->endDate; ?> />
     <br/>
 

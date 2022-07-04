@@ -22,7 +22,7 @@ class ReservationController
         if($step == 'form')
         {
             $this->printAddReservationForm();
-        }
+        } 
         else if($step == 'insert')
         {
             $this->insertReservation($fields);
@@ -50,13 +50,20 @@ class ReservationController
      */
     public function insertReservation(array $fields)
     {
-        (new ReservationManager())->insertReservation($fields['taskDate'],
-                                                      $fields['endTaskDate'],
-                                                      $fields['calendarColor'],
-                                                      $fields['taskService']);
-
-        // A redirection is made on the yearly calendar to immediatly see the change
-        header('Location:index.php?action=printYearlyCalendar');
+        if(!empty($fields))
+        {
+            (new ReservationManager())->insertReservation($fields['taskDate'],
+                                                          $fields['endTaskDate'],
+                                                          $fields['calendarColor'],
+                                                          $fields['taskService']);
+    
+            // A redirection is made on the yearly calendar to immediatly see the change
+            header('Location:index.php?action=printYearlyCalendar');
+        }
+        else 
+        {
+            throw new Exception('Vous devez remplir le formulaire avant d\'enregistrer un arrêt technique.');
+        }
     }
 
     /**

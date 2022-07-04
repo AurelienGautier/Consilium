@@ -18,22 +18,21 @@ class YearlyCalendar
 	 */
 	public function execute($lineId = null)
 	{
-		if($lineId == null) // Get every tasks
+		if($lineId == null) // Get every task
 		{
+			$lines = (new ProdLineManager())->getProdLines();
 			$reservations = (new ReservationManager())->getReservations();
 			$tasks = (new TaskManager())->getTasks();
-			$lines = array();
-
-			for($i = 0; $i < count($reservations); $i++)
-			{
-				$lines[$i] = (new ProdLineManager())->getProdLine($reservations[$i]->prodLineId);
-			}
 		}
-		else // Get only tasks from the specified line id
-		{
+		else if((new ProdLineManager())->isExisting($lineId)) // Get only tasks from the specified line id
+		{			
+			$line = (new ProdLineManager())->getProdLine($lineId);
 			$reservations = (new ReservationManager())->getReservationsByLineId($lineId);
 			$tasks = (new TaskManager())->getTasksByLineId($lineId);
-			$line = (new ProdLineManager())->getProdLine($lineId);
+		}
+		else
+		{
+			throw new Exception('Ligne de production inexistante.');
 		}
 		
 		$months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
