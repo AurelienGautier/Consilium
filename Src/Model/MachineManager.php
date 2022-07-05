@@ -95,7 +95,7 @@ class MachineManager
 
     /************************************************************************************/
 
-    public function insertMachine($machineName, $prodLineId)
+    public function insertMachine($machineName, $prodLinesId)
     {
         $ch = 'INSERT INTO machine (nom_machine) VALUES (:nom_machine)';
         $request = $this->db->prepare($ch);
@@ -109,11 +109,14 @@ class MachineManager
         $result = $request->fetch();
         $machineId = $result['id_machine'];
 
-        $ch = 'INSERT INTO utiliser (id_machine, id_ligneProd) VALUES (:id_machine, :id_ligneProd)';
-        $request = $this->db->prepare($ch);
-        $request->bindValue(':id_machine', $machineId, PDO::PARAM_INT);
-        $request->bindValue(':id_ligneProd', $prodLineId, PDO::PARAM_INT);
-        $request->execute();
+        foreach($prodLinesId as $prodLineId)
+        {
+            $ch = 'INSERT INTO utiliser (id_machine, id_ligneProd) VALUES (:id_machine, :id_ligneProd)';
+            $request = $this->db->prepare($ch);
+            $request->bindValue(':id_machine', $machineId, PDO::PARAM_INT);
+            $request->bindValue(':id_ligneProd', $prodLineId, PDO::PARAM_INT);
+            $request->execute();
+        }
     }
 
     /************************************************************************************/

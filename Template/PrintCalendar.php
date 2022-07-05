@@ -57,6 +57,7 @@
 </div>
 
 <script>
+	// Transform php variables into js variables
 	let tasks = <?php echo json_encode($tasks); ?>;
 	let reservations = <?php echo json_encode($reservations); ?>;
 	let lines = <?php echo json_encode($lines); ?>;

@@ -50,7 +50,7 @@ class ProdLineManager
 
     public function getProdLine(int $id)
     {
-        $ch = 'SELECT nom_ligneProd, couleur_ligneProd;
+        $ch = 'SELECT nom_ligneProd, couleur_ligneProd
                FROM ligneprod
                WHERE id_ligneprod = :id_ligneprod';
 
@@ -58,7 +58,7 @@ class ProdLineManager
         $request->bindValue(':id_ligneprod', $id, PDO::PARAM_INT);
         $request->execute();
 
-        $result = $request->fetch();
+        $result = $request->fetch(PDO::FETCH_ASSOC);
 
         if($result != false)
         {

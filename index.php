@@ -30,6 +30,11 @@ try
                     header('Location:index.php?action=addReservation&step=form');
                 }
                 break;
+
+            case 'modifyReservation':
+                if(isset($_GET['step']) && isset($_GET['reservationId']))
+                (new ReservationController())->modify($_GET['step'], $_GET['reservationId'], $_POST);
+                break;
             
 
             case 'reservationChoice':

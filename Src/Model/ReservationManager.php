@@ -126,4 +126,24 @@ class ReservationManager
     }
 
     /************************************************************************************/
+
+    public function update(int $id, string $startDate, string $endDate, int $prodLineId)
+    {
+        $ch = 'UPDATE reservation
+               SET dateDebut_reservation = :dateDebut_reservation,
+               dateFin_reservation = :dateFin_reservation,
+               id_ligneProd = :id_ligneProd
+               WHERE id_reservation = :id_reservation';
+
+        $request = $this->db->prepare($ch);
+
+        $request->bindValue(':dateDebut_reservation', $startDate, PDO::PARAM_STR);
+        $request->bindValue(':dateFin_reservation', $endDate, PDO::PARAM_STR);
+        $request->bindValue(':id_ligneProd', $prodLineId, PDO::PARAM_INT);
+        $request->bindValue(':id_reservation', $id, PDO::PARAM_INT);
+
+        $request->execute();
+    }
+
+    /************************************************************************************/
 }

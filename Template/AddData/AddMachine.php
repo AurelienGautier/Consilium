@@ -5,15 +5,15 @@
     <input type='text' id='machineName' name='machineName' required/>
     <br/>
 
-    <label for="prodLine">Ligne de production de la machine</label>
-    <select id="prodLine" name="prodLine">
+    <label for="lines">Ligne(s) d'utilisation de la machine</label>
         <?php
             foreach($prodLines as $prodLine)
             {
-                echo '<option value='.$prodLine->id.'>'.$prodLine->name.'</option>';
+                echo '<label>'.$prodLine->name.'</label>';
+                echo '<input name=prodLine[] type="checkbox" value='.$prodLine->id.'>';
+                echo '<br/>';
             }
         ?>
-    </select>
     <br/>
 
     <input type='submit' value='Ajouter'/>

@@ -21,11 +21,16 @@ class ReservationController
     {
         if($step == 'form')
         {
-            $this->printAddReservationForm();
+            $this->addForm();
         } 
         else if($step == 'insert')
         {
-            $this->insertReservation($fields);
+            if(!$this->insertReservation($fields))
+            {
+                header('Location:index.php?action=addReservation&step=form');
+            }
+
+            header('Location:index.php?action=printYearlyCalendar');
         }
         // If the step variable is incorrect
         else
@@ -34,14 +39,18 @@ class ReservationController
         }
     }
 
+    /************************************************************************************/
+
     /**
      * Print the form to add a reservation
      */
-    public function printAddReservationForm()
+    public function addForm()
     {
         $prodLines = (new ProdLineManager())->getProdLines();
         require('Template/ReservationAdd.php');
     }
+
+    /************************************************************************************/
 
     /**
      * Insert the reservation data into db from the form
@@ -54,7 +63,6 @@ class ReservationController
         {
             (new ReservationManager())->insertReservation($fields['taskDate'],
                                                           $fields['endTaskDate'],
-                                                          $fields['calendarColor'],
                                                           $fields['taskService']);
     
             // A redirection is made on the yearly calendar to immediatly see the change
@@ -65,6 +73,66 @@ class ReservationController
             throw new Exception('Vous devez remplir le formulaire avant d\'enregistrer un arrêt technique.');
         }
     }
+
+    /************************************************************************************/
+
+    /**
+     * Modify date of a reservation
+     * 
+     * @param string $step The action to accomplish (print form or insert modifications in db)
+     * @param int $reservationId The id of the reservation to update
+     * @param array fields Data from the form : null if the step is form
+     */
+    public function modify(string $step, int $reservationId, array $fields)
+    {
+        if($step == 'form')
+        {
+            $this->modifyForm($reservationId);
+        }
+        else if($step == 'insert')
+        {
+            $this->update($reservationId, $fields);
+        }
+        else
+        {
+            header('Location:index.php?action=modifyReservation&step=form&reservationId='.$reservationId);
+        }
+    }
+
+    /************************************************************************************/
+
+    /**
+     * Print the form to get modification data
+     * 
+     * @param int $reservationId The id of the reservation to modify
+     */
+    private function modifyForm(int $reservationId)
+    {
+        $reservation = (new ReservationManager())->getReservation($reservationId);
+        $prodLines = (new ProdLineManager())->getProdLines();
+
+        require('Template/ReservationModify.php');
+    }
+
+    /************************************************************************************/
+
+    /**
+     * Insert modifications in db
+     * 
+     * @param int $reservationId The id of the reservation to modify
+     * @param array $fields Data from the form
+     */
+    private function update(int $reservationId, array $fields)
+    {
+        (new ReservationManager())->update($reservationId, 
+                                           $fields['startDate'], 
+                                           $fields['endDate'], 
+                                           $fields['prodLine']);
+                                           
+        header('Location:index.php?action=printYearlyCalendar');
+    }
+
+    /************************************************************************************/
 
     /**
      * Display every reservation to choosing one in order to planify a task
@@ -81,4 +149,6 @@ class ReservationController
 
         require('Template/ReservationChoice.php');
     }
+
+    /************************************************************************************/
 }

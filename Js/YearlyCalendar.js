@@ -1,3 +1,4 @@
+
 class YearlyCalendar 
 {
 	constructor(tasks, reservations, lines)
@@ -9,6 +10,7 @@ class YearlyCalendar
 		this.actualYear = new Date().getFullYear();
 	}
 
+	// Load the page with the yearly calendar
 	load()
 	{
 		this.createCellId();
@@ -20,6 +22,7 @@ class YearlyCalendar
 		year.textContent = this.actualYear;
 	}
 
+	// Change the year to display
 	changeYear(moment)
 	{
 		this.emptyCells();
@@ -30,6 +33,7 @@ class YearlyCalendar
 		this.load();
 	}
 
+	// Display colors representing the reservations
 	printCalendarColors()
 	{
 		let reservations = this.selectReservationsByYear(this.reservations);
@@ -48,7 +52,7 @@ class YearlyCalendar
 					let actualDiv = actualTd.querySelector('div');
 					actualDiv = actualDiv.querySelector(`.a${reservations[i].id}`);
 
-					let line = this.getLine(reservations[i].prodLineId);
+					let line = getLine(reservations[i].prodLineId, this.lines);
 	
 					actualDiv.style['background-color'] = line.color;
 				}
@@ -107,13 +111,13 @@ class YearlyCalendar
 
 	createCellId()
 	{
-		let dates = document.getElementsByTagName('td');
+		let calendarLines = document.getElementsByTagName('td');
 
 		let dateId = [this.actualYear, '01', '01', this.actualYear+'-01-01'];
 		
-		for(let i = 0; i < dates.length; i++)
+		for(let i = 0; i < calendarLines.length; i++)
 		{
-			dates[i].id = dateId[3];
+			calendarLines[i].id = dateId[3];
 			dateId = incrementDate(dateId);
 		}
 	}
@@ -214,14 +218,6 @@ class YearlyCalendar
 
 		return monthDivs;
 	}
-
-	getLine(lineId)
-	{
-		for(let line of this.lines)
-		{
-			if(line.id == lineId) return line;
-		}
-	}
 }
 
 /************************************************************************************/
@@ -231,7 +227,6 @@ function incrementDate(date)
 	let month = parseInt(date[1]);
 	let day = parseInt(date[2]);
 
-	// Incrementation of the month
 	month++;
 
 	if(month > 12) 
@@ -254,24 +249,10 @@ function incrementDate(date)
 
 /************************************************************************************/
 
-function isDateValid(date)
+function getLine(id, lines)
 {
-	if(isNaN(Date.parse(date[3]))) return false;
-	return true;
+	for(let line of lines)
+	{
+		if(line.id == id) return line;
+	}
 }
-
-/************************************************************************************/
-
-function dateToString(date)
-{
-	let year = date.getFullYear();
-	let month = date.getMonth() + 1;
-	let day = date.getDate();
-
-	if(month < 10) month = '0' + month;
-	if(day < 10) day = '0' + day;
-
-	return year + '-' + month + '-' + day;
-}
-
-/************************************************************************************/

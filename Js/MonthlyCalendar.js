@@ -35,6 +35,7 @@ class MonthlyCalendar
 		}
 	}
 
+	// à factoriser
 	emptyCells()
 	{
 		let dates = document.getElementsByTagName('td');
@@ -76,7 +77,7 @@ class MonthlyCalendar
 
 				if(actualTr != null)
 				{
-					let line = this.getLine(reservations[i].prodLineId);
+					let line = getLine(reservations[i].prodLineId, this.lines);
 					let actualTd = actualTr.querySelector('.' + line.name);
 
 					actualTd.style['background-color'] = line.color;
@@ -84,14 +85,6 @@ class MonthlyCalendar
 
 				actualDate.setDate(actualDate.getDate() + 1);
 			}
-		}
-	}
-
-	getLine(id)
-	{
-		for(let line of lines)
-		{
-			if(line.id == id) return line;
 		}
 	}
 
@@ -146,6 +139,7 @@ class MonthlyCalendar
 		return reservationsList;
 	}
 
+	// à factoriser
 	isDateBetween(date1, dateToVerify, date2)
 	{
 		if(this.isDateHigher(date1, dateToVerify)) return false;
@@ -153,6 +147,7 @@ class MonthlyCalendar
 		return true;
 	}
 
+	// à factoriser
 	isDateHigher(date1, date2)
 	{
 		if(date1['year'] > date2['year']) return true;
@@ -164,32 +159,20 @@ class MonthlyCalendar
 		return false;
 	}
 
-
-	getLineName(lineId)
-	{
-		for(let line of this.lines)
-		{
-			if(line.id === lineId)
-			{
-				return line.name;
-			}
-		}
-	}
-
 	selectLineNameFromTask(task)
 	{
 		for(let reservation of this.reservations)
 		{
 			if(task.reservationId == reservation.id)
 			{
-				return this.getLineName(reservation.prodLineId, this.lines);
+				return getLine(reservation.prodLineId, this.lines).name;
 			}
 		}
 	}
 
 	changeMonth(moment)
 	{
-	this.emptyCells();
+		this.emptyCells();
 
 		if(moment == 'next') this.actualMonth++;
 		if(moment == 'previous') this.actualMonth--;
@@ -214,4 +197,12 @@ function isDateValid(date)
 {
 	if(isNaN(Date.parse(date[3]))) return false;
 	return true;
+}
+
+function getLine(id, lines)
+{
+	for(let line of lines)
+	{
+		if(line.id == id) return line;
+	}
 }

@@ -25,8 +25,9 @@ class YearlyCalendar
 			$tasks = (new TaskManager())->getTasks();
 		}
 		else if((new ProdLineManager())->isExisting($lineId)) // Get only tasks from the specified line id
-		{			
-			$line = (new ProdLineManager())->getProdLine($lineId);
+		{
+			$lines = array();
+			$lines[0] = (new ProdLineManager())->getProdLine($lineId);
 			$reservations = (new ReservationManager())->getReservationsByLineId($lineId);
 			$tasks = (new TaskManager())->getTasksByLineId($lineId);
 		}
