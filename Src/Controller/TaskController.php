@@ -29,6 +29,8 @@ class TaskController
         }
     }
 
+    /************************************************************************************/
+
     /**
      * Print the form to add a task
      * 
@@ -45,6 +47,8 @@ class TaskController
         require('Template/TaskAdd.php');
     }
 
+    /************************************************************************************/
+
     /**
      * Insert the task data into db recuperated from the form
      * 
@@ -53,17 +57,86 @@ class TaskController
      */
     private function insertTask(int $reservationId, array $fields)
     {
-        (new TaskManager())->insertTask($fields['taskName'],
-                                        $fields['taskDescription'],
-                                        $fields['taskDate'],
-                                        $fields['endTaskDate'],
-                                        $fields['stopType'],
-                                        $reservationId,
-                                        $fields['supplier'],
-                                        $fields['taskMachine']);
+        (new TaskManager())->insertTask(
+            $fields['name'],
+            $fields['description'],
+            $fields['startDate'],
+            $fields['endDate'],
+            $fields['type'],
+            $reservationId,
+            $fields['supplier'],
+            $fields['machine']
+        );
 
         header('Location:index.php?action=printYearlyCalendar');
     }
+
+    /************************************************************************************/
+
+    /**
+     * Modify data of a task
+     * 
+     * @param string $step The action to accomplish (print form or insert modifications in db)
+     * @param int $taskId The id of the task to modify
+     * @param array $fields Data from the form
+     */
+    public function modify(string $step, int $taskId, array $fields)
+    {
+        if($step == 'form')
+        {
+            $this->modifyForm($taskId);
+        }
+        else if($step == 'insert')
+        {
+            $this->update($taskId, $fields);
+        }
+    }
+
+    /************************************************************************************/
+
+    /**
+     * Print the form to modify a task
+     * 
+     * @param int $taskId The id of the task to modify
+     */
+    private function modifyForm(int $taskId)
+    {
+        $task = (new TaskManager())->getTask($taskId);
+        $reservation = (new ReservationManager())->getReservation($task->reservationId);
+        $prodLine = (new ProdLineManager())->getProdLine($reservation->prodLineId);
+        $suppliers = (new SupplierManager())->getSuppliers();
+        $taskType = (new TaskTypeManager())->getTaskTypes();
+        $machines = (new MachineManager())->getMachinesFromProdLine($prodLine->id);
+        $taskTypes = (new TaskTypeManager())->getTaskTypes();
+
+        require('Template/TaskModify.php');
+    }
+
+    /************************************************************************************/
+
+    /**
+     * Insert modifications in db
+     * 
+     * @param int $taskId The id of the task to modify
+     * @param array $fields Data from the form
+     */
+    private function update(int $taskId, array $fields)
+    {
+        (new TaskManager())->update(
+            $taskId,
+            $fields['name'],
+            $fields['description'],
+            $fields['startDate'],
+            $fields['endDate'],
+            $fields['supplier'],
+            $fields['type'],
+            $fields['machine']
+        );
+
+        header('Location:index.php?action=printYearlyCalendar');
+    }
+    
+    /************************************************************************************/
 
     /**
      * Print informations about a task
@@ -88,4 +161,23 @@ class TaskController
             throw new Exception('Cette tâche n\'existe pas.');
         }
     }
+
+    /************************************************************************************/
+
+    public function choose(int $reservationId)
+    {
+        $tasks = (new TaskManager())->getTasksByReservation($reservationId);
+        $taskTypes = array();
+        $suppliers = array();
+
+        for($i = 0; $i < count($tasks); $i++)
+        {
+            $taskTypes[$i] = (new TaskTypeManager())->getTaskType($tasks[$i]->type);
+            $suppliers[$i] = (new SupplierManager())->getSupplier($tasks[$i]->supplierId);
+        }
+
+        require('Template/TaskChoice.php');
+    }
+
+    /************************************************************************************/
 }

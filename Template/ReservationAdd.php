@@ -5,7 +5,7 @@
         <?php
             foreach($prodLines as $prodLine)
             {
-                echo('<option value="'.$prodLine->id.'">'.$prodLine->name.'</option>');
+                echo('<option value="'.htmlspecialchars($prodLine->id).'">'.htmlspecialchars($prodLine->name).'</option>');
             }
         ?>
     </select>

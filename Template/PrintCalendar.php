@@ -7,8 +7,8 @@
 				foreach ($lines as $line)
 				{
 					echo '<div class="legend-pack">';
-					echo '<div class="legend-color" id="'.$line->color.'"></div>';
-					echo $line->name;
+					echo '<div class="legend-color" id="'.htmlspecialchars($line->color).'"></div>';
+					echo htmlspecialchars($line->name);
 					echo '</div>';
 				}
 			}
@@ -58,9 +58,9 @@
 
 <script>
 	// Transform php variables into js variables
-	let tasks = <?php echo json_encode($tasks); ?>;
-	let reservations = <?php echo json_encode($reservations); ?>;
-	let lines = <?php echo json_encode($lines); ?>;
+	let tasks = <?= json_encode($tasks) ?>;
+	let reservations = <?= json_encode($reservations) ?>;
+	let lines = <?= json_encode($lines) ?>;
 
 	calendar = new YearlyCalendar(tasks, reservations, lines);
 	calendar.load();
@@ -71,6 +71,7 @@
 	next.onclick = function() { calendar.changeYear('next'); }
 	previous.onclick = function() { calendar.changeYear('previous'); } 
 
+	// Display the legend with good colours
 	let legends = document.getElementsByClassName("legend-color");
 	for(legend of legends) legend.style['background-color'] = legend.id;
 </script>

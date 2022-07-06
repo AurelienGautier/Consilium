@@ -12,10 +12,18 @@
 <body>
 	<header>
 		<div class="nav-button">
-			<a class="nav-button" href="index.php?action=addReservation&step=form">Créer une nouvelle tâche</a>
+			<a class="nav-button" href="index.php?action=addReservation&step=form">Nouvelle planification</a>
 			<ul>
 				<li><a href="index.php?action=addReservation&step=form">Réserver une ligne</a></li>
-				<li><a href="index.php?action=reservationChoice">Ajouter une tâche</a></li>
+				<li><a href="index.php?action=reservationChoice&for=addTask">Ajouter une tâche</a></li>
+			</ul>
+		</div>
+
+		<div class="nav-button">
+			<a class="nav-button" href="index.php?action=reservationChoice&for=modify">Modifier une planification</a>
+			<ul>
+				<li><a href="index.php?action=reservationChoice&for=modifyReservation">Ligne réservée</a></li>
+				<li><a href="index.php?action=reservationChoice&for=modifyTask">Modifier une tâche</a></li>
 			</ul>
 		</div>
 
@@ -25,7 +33,7 @@
 				<?php
 					foreach($lines as $line)
 					{
-						echo '<li><a href=index.php?action=printYearlyCalendar&lineId='.$line->id.'>'.$line->name.'</a></li>';
+						echo '<li><a href=index.php?action=printYearlyCalendar&lineId='.htmlspecialchars($line->id).'>'.htmlspecialchars($line->name).'</a></li>';
 					}
 				?>
 			</ul>

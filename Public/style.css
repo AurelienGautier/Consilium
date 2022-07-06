@@ -104,14 +104,14 @@ header a
 	width: auto;
 }
 
-#reservations
+#reservations, #tasks
 {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
 
-.reservation
+.reservation, .task
 {
 	width: 220px;
 	height: 300px;
@@ -119,9 +119,9 @@ header a
 	border-radius: 10px;
 }
 
-.reservInfos
+.task
 {
-	color: aliceblue;
+	border: 2px solid black;
 }
 
 #container
@@ -178,4 +178,9 @@ td > a
 #printData
 {
 	width: 50%;
+}
+
+a
+{
+	color: white;
 }

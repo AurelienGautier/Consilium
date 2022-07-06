@@ -1,22 +1,54 @@
-function displayReservations(reservations, prodLines)
+function displayReservations(reservations, prodLines, url)
 {
 	var reservDiv = document.getElementById('reservations');
 
 	for(let i = 0; i < reservations.length; i++)
 	{
 		newLink = document.createElement('a');
-		newLink.href = "index.php?action=addTask&step=form&reservationId=" + reservations[i].id;
+		newLink.href = 'index.php?action=' + url + reservations[i].id;
 
 		newLink.setAttribute('id', reservations[i].id);
 		newLink.setAttribute('class', 'reservation');
 
 		newLink.style['background-color'] = prodLines[i].color;
+		newLink.style['color'] = 'aliceblue';
 
 		newLink.appendChild(addReservationInfos('Ligne', prodLines[i].name));
 		newLink.appendChild(addReservationInfos('du', reservations[i].startDate));
 		newLink.appendChild(addReservationInfos('au', reservations[i].endDate));
 
 		reservDiv.appendChild(newLink);
+	}
+}
+
+/************************************************************************************/
+
+function displayTasks(tasks, taskTypes, suppliers, reservationId)
+{
+	var taskDiv = document.getElementById('tasks');
+
+	for(let i = 0; i < tasks.length; i++)
+	{
+		newLink = document.createElement('a');
+		newLink.href = 'index.php?action=modifyTask&step=form&taskId='+tasks[i].id;
+
+		newLink.setAttribute('id', tasks[i].id);
+		newLink.setAttribute('class', 'task');
+
+		newLink.style['color'] = 'black';
+		
+		newLink.appendChild(addReservationInfos('Nom', tasks[i].name));
+		newLink.appendChild(addReservationInfos('Type de tâche', taskTypes[i].name));
+		newLink.appendChild(addReservationInfos('du', tasks[i].startDate));
+		newLink.appendChild(addReservationInfos('au', tasks[i].endDate));
+
+		if(suppliers[i] != null)
+			newLink.appendChild(addReservationInfos('Fournisseur', suppliers[i].name));
+		else 
+			newLink.appendChild(addReservationInfos('Fournisseur', 'Aucun'));
+
+
+		taskDiv.appendChild(newLink);
 	}
 }
 

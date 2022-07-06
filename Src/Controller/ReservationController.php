@@ -77,7 +77,7 @@ class ReservationController
     /************************************************************************************/
 
     /**
-     * Modify date of a reservation
+     * Modify data of a reservation
      * 
      * @param string $step The action to accomplish (print form or insert modifications in db)
      * @param int $reservationId The id of the reservation to update
@@ -136,9 +136,16 @@ class ReservationController
 
     /**
      * Display every reservation to choosing one in order to planify a task
+     * 
+     * @param string $reason The reason why we want to choose a reservation
      */
-    public function choose()
+    public function choose(string $reason)
     {
+        if($reason == 'addTask') $url = 'addTask&step=form&reservationId=';
+        else if($reason == 'modifyReservation') $url = 'modifyReservation&step=form&reservationId=';
+        else if ($reason == 'modifyTask') $url = 'taskChoice&reservationId=';
+        else header('Location:index.php');
+
         $reservations = (new ReservationManager())->getReservations();
         $prodLines = array();
 

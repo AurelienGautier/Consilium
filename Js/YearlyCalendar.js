@@ -52,6 +52,8 @@ class YearlyCalendar
 					let actualDiv = actualTd.querySelector('div');
 					actualDiv = actualDiv.querySelector(`.a${reservations[i].id}`);
 
+					actualDiv.style['color'] = 'white';
+
 					let line = getLine(reservations[i].prodLineId, this.lines);
 	
 					actualDiv.style['background-color'] = line.color;
@@ -83,7 +85,7 @@ class YearlyCalendar
 				}
 				else
 				{
-					actualDiv.textContent += '-----';
+					actualDiv.innerHTML += '-----';
 				}
 
 				actualDate.setDate(actualDate.getDate() + 1);

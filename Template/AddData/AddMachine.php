@@ -9,8 +9,8 @@
         <?php
             foreach($prodLines as $prodLine)
             {
-                echo '<label>'.$prodLine->name.'</label>';
-                echo '<input name=prodLine[] type="checkbox" value='.$prodLine->id.'>';
+                echo '<label>'.htmlspecialchars($prodLine->name).'</label>';
+                echo '<input name=prodLine[] type="checkbox" value='.htmlspecialchars($prodLine->id).'>';
                 echo '<br/>';
             }
         ?>

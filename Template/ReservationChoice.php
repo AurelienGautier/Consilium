@@ -1,6 +1,5 @@
-<div id="reservations">
-</div>
+<div id="reservations"></div>
 
 <script>
-    displayReservations(<?php echo json_encode($reservations) ?>, <?php echo json_encode($prodLines)?>);
+    displayReservations(<?= json_encode($reservations) ?>, <?= json_encode($prodLines)?>, <?= json_encode($url) ?>);
 </script>

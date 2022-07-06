@@ -33,12 +33,16 @@ try
 
             case 'modifyReservation':
                 if(isset($_GET['step']) && isset($_GET['reservationId']))
-                (new ReservationController())->modify($_GET['step'], $_GET['reservationId'], $_POST);
+                {
+                    (new ReservationController())->modify($_GET['step'], $_GET['reservationId'], $_POST);
+                }
                 break;
             
-
             case 'reservationChoice':
-                (new ReservationController())->choose();
+                if(isset($_GET['for']))
+                {
+                    (new ReservationController())->choose($_GET['for']);
+                }
                 break;
 
             case 'addTask':
@@ -48,11 +52,22 @@ try
                 }
                 break;
 
+            case 'modifyTask':
+                if(isset($_GET['step']) && isset($_GET['taskId']))
+                {
+                    (new TaskController())->modify($_GET['step'], $_GET['taskId'], $_POST);
+                }
+                break;
+
             case 'printTask':
                 if(isset($_GET['taskId']))
                 {
                     (new TaskController())->print($_GET['taskId']);
                 }
+                break;
+
+            case 'taskChoice':
+                (new TaskController())->choose($_GET['reservationId']);
                 break;
 
             case 'printYearlyCalendar':

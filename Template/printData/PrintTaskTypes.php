@@ -5,7 +5,7 @@
         {
             echo '<tr>';
 
-            echo '<td>'.$taskType->name.'</td>';
+            echo '<td>'.htmlspecialchars($taskType->name).'</td>';
 
             echo '</tr>';
         }

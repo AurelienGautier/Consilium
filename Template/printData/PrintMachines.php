@@ -8,13 +8,13 @@
         foreach($machines as $key => $machine)
         {
             echo '<tr>';
-            echo '<td>'.$machine->name.'</td>';
+            echo '<td>'.htmlspecialchars($machine->name).'</td>';
 
             echo '<td>';
             
             foreach($machineProdLines[$key] as $machineProdLine)
             {
-                echo($machineProdLine->name . '<br/>');
+                echo(htmlspecialchars($machineProdLine->name) . '<br/>');
             }
 
             echo '</td>';

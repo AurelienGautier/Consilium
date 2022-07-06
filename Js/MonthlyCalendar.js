@@ -91,7 +91,7 @@ class MonthlyCalendar
 	printTasks()
 	{
 		let tasks = this.selectReservations(this.tasks);
-		let resrvations = this.selectReservations(this.reservations);
+		let reservations = this.selectReservations(this.reservations);
 
 		for(let i = 0; i < tasks.length; i++)
 		{
@@ -100,16 +100,17 @@ class MonthlyCalendar
 
 			while(actualDate <= endDate)
 			{
-				let actualTr = document.getElementsByClassName(dateToString(actualDate))[0];
+				let actualTr = document.getElementById(dateToString(actualDate));
 
 				if(actualTr != null)
 				{
 					let actualTd = actualTr.querySelector('.' + this.selectLineNameFromTask(tasks[i]));
+					actualTd.style['color'] = 'white';
 	
 					if(dateToString(actualDate) == tasks[i].startDate)
 						actualTd.innerHTML = '<a href=index.php?action=printTask&taskId='+tasks[i].id+'>'+tasks[i].name+'</a>';
 					else
-						actualTd.textContent = '-----';
+						actualTd.innerHTML += ' -----';
 				}
 
 				actualDate.setDate(actualDate.getDate() + 1);

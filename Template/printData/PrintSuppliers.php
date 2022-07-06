@@ -5,7 +5,7 @@
         foreach($suppliers as $supplier)
         {
             echo '<tr>';
-            echo '<td>'.$supplier->name.'</td>';
+            echo '<td>'.htmlspecialchars($supplier->name).'</td>';
             echo '</tr>';
         }
     ?>

@@ -6,11 +6,11 @@
             {
                 if($prodLine->id == $reservation->prodLineId)
                 {
-                    echo '<option value='.$prodLine->id.' selected>'.$prodLine->name.'</option>';
+                    echo '<option value='.htmlspecialchars($prodLine->id).' selected>'.htmlspecialchars($prodLine->name).'</option>';
                 }
                 else
                 {
-                    echo '<option value='.$prodLine->id.'>'.$prodLine->name.'</option>';
+                    echo '<option value='.htmlspecialchars($prodLine->id).'>'.htmlspecialchars($prodLine->name).'</option>';
                 }
             }
         ?>
@@ -18,12 +18,12 @@
 
     <!-- Date de début de réservation de ligne -->
     <label for="startDate">Date du début de la réservation</label>
-    <input type="date" id="startDate" name="startDate" value=<?= $reservation->startDate ?> required />
+    <input type="date" id="startDate" name="startDate" value=<?= htmlspecialchars($reservation->startDate) ?> required />
     <br/>
 
     <!-- Date de fin de réservation de ligne -->
     <label for="endDate">Date de fin de la réservation</label>
-    <input type="date" id="endDate" name="endDate" value=<?= $reservation->endDate ?> required />
+    <input type="date" id="endDate" name="endDate" value=<?= htmlspecialchars($reservation->endDate) ?> required />
     <br/>
 
     <input type="submit" value="Valider" />

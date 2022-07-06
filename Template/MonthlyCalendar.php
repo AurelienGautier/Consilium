@@ -12,7 +12,7 @@
 
         foreach($lines as $line)
         {
-            echo '<th>'.$line->name.'</th>';
+            echo '<th>'.htmlspecialchars($line->name).'</th>';
         }
         echo '</tr>';
         echo '</thead>';
@@ -25,7 +25,7 @@
 
             foreach($lines as $line)
             {
-                echo '<td class='.$line->name.'></td>';
+                echo '<td class='.htmlspecialchars($line->name).'></td>';
             }
 
             echo '</tr>';

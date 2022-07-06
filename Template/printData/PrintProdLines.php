@@ -5,7 +5,7 @@
         {
             echo '<tr>';
 
-            echo '<td>'.$prodLine->name.'</td>';
+            echo '<td>'.htmlspecialchars($prodLine->name).'</td>';
 
             echo '</tr>';
         }
