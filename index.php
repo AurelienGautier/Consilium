@@ -66,6 +66,13 @@ try
                 }
                 break;
 
+            case 'deleteTask':
+                if(isset($_GET['taskId']))
+                {
+                    (new TaskController())->delete($_GET['taskId']);
+                }
+                break;
+
             case 'printTask':
                 if(isset($_GET['taskId']))
                 {
@@ -74,7 +81,10 @@ try
                 break;
 
             case 'taskChoice':
-                (new TaskController())->choose($_GET['reservationId']);
+                if(isset($_GET['for']) && isset($_GET['reservationId']))
+                {
+                    (new TaskController())->choose($_GET['for'], $_GET['reservationId']);
+                }
                 break;
 
             case 'printYearlyCalendar':

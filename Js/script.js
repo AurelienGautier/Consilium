@@ -23,14 +23,14 @@ function displayReservations(reservations, prodLines, url)
 
 /************************************************************************************/
 
-function displayTasks(tasks, taskTypes, suppliers, reservationId)
+function displayTasks(tasks, taskTypes, suppliers, url)
 {
 	var taskDiv = document.getElementById('tasks');
 
 	for(let i = 0; i < tasks.length; i++)
 	{
 		newLink = document.createElement('a');
-		newLink.href = 'index.php?action=modifyTask&step=form&taskId='+tasks[i].id;
+		newLink.href = 'index.php?action=' + url + tasks[i].id;
 
 		newLink.setAttribute('id', tasks[i].id);
 		newLink.setAttribute('class', 'task');

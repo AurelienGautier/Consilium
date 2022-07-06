@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="nav-button">
-			<a class="nav-button">Supprimer une planification</a>
+			<a class="nav-button" href="index.php?action=reservationChoice&for=deleteReservation">Supprimer une planification</a>
 			<ul>
 				<li><a href="index.php?action=reservationChoice&for=deleteReservation">Ligne réservée</a></li>
 				<li><a href="index.php?action=reservationChoice&for=deleteTask">Supprimer une tâche</a></li>

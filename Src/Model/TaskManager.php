@@ -273,4 +273,15 @@ class TaskManager
     }
 
     /************************************************************************************/
+
+    public function delete(int $taskId)
+    {
+        $ch = 'DELETE FROM tache WHERE id_tache = :id_tache';
+
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_tache', $taskId, PDO::PARAM_INT);
+        $request->execute();
+    }
+
+    /************************************************************************************/
 }

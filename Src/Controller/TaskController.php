@@ -139,6 +139,20 @@ class TaskController
     /************************************************************************************/
 
     /**
+     * Delete a task
+     * 
+     * @param int $taskId The id of the task to delete
+     */
+    public function delete(int $taskId)
+    {
+        (new TaskManager())->delete($taskId);
+
+        header('Location:index.php?action=printYearlyCalendar');
+    }
+
+    /************************************************************************************/
+
+    /**
      * Print informations about a task
      * 
      * @param int $taskId The id of the task to print
@@ -164,8 +178,11 @@ class TaskController
 
     /************************************************************************************/
 
-    public function choose(int $reservationId)
+    public function choose(string $reason, int $reservationId)
     {
+        if($reason == 'modify') $url = 'modifyTask&step=form&taskId=';
+        else if($reason == 'delete') $url = 'deleteTask&taskId=';
+
         $tasks = (new TaskManager())->getTasksByReservation($reservationId);
         $taskTypes = array();
         $suppliers = array();

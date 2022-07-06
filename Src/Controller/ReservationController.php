@@ -143,8 +143,9 @@ class ReservationController
     {
         if($reason == 'addTask') $url = 'addTask&step=form&reservationId=';
         else if($reason == 'modifyReservation') $url = 'modifyReservation&step=form&reservationId=';
-        else if($reason == 'modifyTask') $url = 'taskChoice&reservationId=';
+        else if($reason == 'modifyTask') $url = 'taskChoice&for=modify&reservationId=';
         else if($reason == 'deleteReservation') $url = 'deleteReservation&reservationId=';
+        else if($reason == 'deleteTask') $url = 'taskChoice&for=delete&reservationId=';
         else header('Location:index.php');
 
         $reservations = (new ReservationManager())->getReservations();
