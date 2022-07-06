@@ -146,4 +146,21 @@ class ReservationManager
     }
 
     /************************************************************************************/
+
+    public function delete(int $id)
+    {
+        $ch = 'DELETE FROM tache WHERE id_reservation = :id_reservation';
+
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_reservation', $id, PDO::PARAM_INT);
+        $request->execute();
+
+        $ch = 'DELETE FROM reservation WHERE id_reservation = :id_reservation';
+
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_reservation', $id, PDO::PARAM_INT);
+        $request->execute();
+    }
+
+    /************************************************************************************/
 }

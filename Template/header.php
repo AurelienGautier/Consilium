@@ -20,10 +20,18 @@
 		</div>
 
 		<div class="nav-button">
-			<a class="nav-button" href="index.php?action=reservationChoice&for=modify">Modifier une planification</a>
+			<a class="nav-button" href="index.php?action=reservationChoice&for=modifyReservation">Modifier une planification</a>
 			<ul>
 				<li><a href="index.php?action=reservationChoice&for=modifyReservation">Ligne réservée</a></li>
 				<li><a href="index.php?action=reservationChoice&for=modifyTask">Modifier une tâche</a></li>
+			</ul>
+		</div>
+
+		<div class="nav-button">
+			<a class="nav-button">Supprimer une planification</a>
+			<ul>
+				<li><a href="index.php?action=reservationChoice&for=deleteReservation">Ligne réservée</a></li>
+				<li><a href="index.php?action=reservationChoice&for=deleteTask">Supprimer une tâche</a></li>
 			</ul>
 		</div>
 

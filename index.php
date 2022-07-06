@@ -37,6 +37,13 @@ try
                     (new ReservationController())->modify($_GET['step'], $_GET['reservationId'], $_POST);
                 }
                 break;
+
+            case 'deleteReservation':
+                if(isset($_GET['reservationId']))
+                {
+                    (new ReservationController())->delete($_GET['reservationId']);
+                }
+                break;
             
             case 'reservationChoice':
                 if(isset($_GET['for']))

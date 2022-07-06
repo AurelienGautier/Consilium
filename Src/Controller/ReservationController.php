@@ -143,7 +143,8 @@ class ReservationController
     {
         if($reason == 'addTask') $url = 'addTask&step=form&reservationId=';
         else if($reason == 'modifyReservation') $url = 'modifyReservation&step=form&reservationId=';
-        else if ($reason == 'modifyTask') $url = 'taskChoice&reservationId=';
+        else if($reason == 'modifyTask') $url = 'taskChoice&reservationId=';
+        else if($reason == 'deleteReservation') $url = 'deleteReservation&reservationId=';
         else header('Location:index.php');
 
         $reservations = (new ReservationManager())->getReservations();
@@ -155,6 +156,20 @@ class ReservationController
         }
 
         require('Template/ReservationChoice.php');
+    }
+
+    /************************************************************************************/
+
+    /**
+     * Delete a reservation and all its tasks
+     * 
+     * @param int $reservationId
+     */
+    public function delete(int $reservationId)
+    {
+        (new ReservationManager())->delete($reservationId);
+
+        header('Location:index.php?action=printYearlyCalendar');
     }
 
     /************************************************************************************/
