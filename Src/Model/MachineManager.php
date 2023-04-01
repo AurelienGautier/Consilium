@@ -61,6 +61,8 @@ class MachineManager
         $machine = new Machine();
         $machine->id = $id;
         $machine->name = $result['nom_machine'];
+
+        return $machine;
     }
 
     /************************************************************************************/

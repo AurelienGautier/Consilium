@@ -15,6 +15,10 @@
         <th>Date de fin</th>
         <td><?= htmlspecialchars($task->endDate) ?></td>
     </tr>
+    <tr>
+        <th>Machine</th>
+        <td><?= htmlspecialchars($machine->name) ?></td>
+    </tr>
     <?php
         if($supplier != null)
         {
