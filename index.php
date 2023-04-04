@@ -124,6 +124,7 @@ try
 catch(Exception $e)
 {
     $errorMessage = $e->getMessage();
+    echo $e->getCode();
 
     require('Template/Error.php');
 }

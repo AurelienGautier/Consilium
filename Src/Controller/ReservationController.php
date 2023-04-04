@@ -124,12 +124,22 @@ class ReservationController
      */
     private function update(int $reservationId, array $fields)
     {
-        (new ReservationManager())->update($reservationId, 
-                                           $fields['startDate'], 
-                                           $fields['endDate'], 
-                                           $fields['prodLine']);
-                                           
-        header('Location:index.php?action=printYearlyCalendar');
+        $tasks = (new TaskManager())->getTasksByReservation($reservationId);
+
+        if(!empty($tasks)) 
+        {
+            require('Template/moveTasks.php');
+        }
+        else
+        {
+            (new ReservationManager())->update($reservationId, 
+                                               $fields['startDate'], 
+                                               $fields['endDate'], 
+                                               $fields['prodLine']);
+
+            header('Location:index.php?action=printYearlyCalendar');
+        }
+
     }
 
     /************************************************************************************/
