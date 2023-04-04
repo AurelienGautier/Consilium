@@ -126,12 +126,20 @@ class ReservationController
     {
         $tasks = (new TaskManager())->getTasksByReservation($reservationId);
 
-        if(!empty($tasks)) 
+        if(!empty($tasks) && !isset($_GET['taskModified'])) 
         {
             require('Template/moveTasks.php');
         }
         else
         {
+            if(isset($_GET['taskModified']))
+            {
+                foreach($_POST['taskId'] as $key => $task)
+                {
+                    (new TaskManager())->updateDate($task, $_POST['taskStartDate'][$key], $_POST['taskEndDate'][$key]);
+                }
+            }
+
             (new ReservationManager())->update($reservationId, 
                                                $fields['startDate'], 
                                                $fields['endDate'], 

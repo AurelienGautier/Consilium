@@ -268,8 +268,26 @@ class TaskManager
         $request->bindValue(':id_machine', $machineId, PDO::PARAM_INT);
         $request->bindValue(':id_tache', $id, PDO::PARAM_INT);
 
-        $request->execute() or die(print_r($request->errorInfo()));
+        $request->execute();
 
+    }
+
+    /************************************************************************************/
+
+    public function updateDate(int $id, string $startDate, string $endDate)
+    {
+        $ch = 'UPDATE tache
+               SET dateDebut_tache = :dateDebut_tache,
+               dateFin_tache = :dateFin_tache
+               WHERE id_tache = :id_tache';
+
+        $request = $this->db->prepare($ch);
+
+        $request->bindValue(':dateDebut_tache', $startDate, PDO::PARAM_STR);
+        $request->bindValue(':dateFin_tache', $endDate, PDO::PARAM_STR);
+        $request->bindValue(':id_tache', $id, PDO::PARAM_INT);
+
+        $request->execute();
     }
 
     /************************************************************************************/
