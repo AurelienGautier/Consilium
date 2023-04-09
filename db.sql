@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3307
--- Généré le : dim. 09 avr. 2023 à 10:12
+-- Généré le : dim. 09 avr. 2023 à 16:27
 -- Version du serveur : 10.10.2-MariaDB
 -- Version de PHP : 8.0.26
 
@@ -23,27 +23,14 @@ SET time_zone = "+00:00";
 
 DELIMITER $$
 --
--- Procédures
+-- Fonctions
 --
-DROP PROCEDURE IF EXISTS `verificationDispoMachine`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `verificationDispoMachine` (`laMachine` INT, `laDateDebut` DATE, `laDateFin` DATE)   BEGIN
-    	DECLARE nbCol INT;
-        
-        SELECT COUNT(*)
-        INTO nbCol
-        FROM tache
-        WHERE id_machine = laMachine
-        AND (
-            (dateDebut_tache <= laDateDebut AND laDateDebut <= dateFin_tache)
-            OR (dateDebut_tache <= laDateFin AND laDateFin <= dateFin_tache)
-            OR (dateDebut_tache >= laDateDebut AND dateFin_tache <= laDateFin)
-        );
-
-        IF nbCol > 0 THEN 
-            SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Une tâche a déjà été attribuée sur la machine durant cette période.';
-        END IF;
-	END$$
+DROP FUNCTION IF EXISTS `dateComprise`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `dateComprise` (`dateExistante1` DATE, `dateExistante2` DATE, `dateAjout1` DATE, `dateAjout2` DATE) RETURNS TINYINT(1) DETERMINISTIC RETURN ( 
+    (dateExistante1 <= dateAjout1 AND dateAjout1 <= dateExistante2)
+    OR (dateExistante1 <= dateAjout2 AND dateAjout2 <= dateExistante2)
+    OR (dateExistante1 >= dateAjout1 AND dateExistante2 <= dateAjout2)
+)$$
 
 DELIMITER ;
 
@@ -128,14 +115,37 @@ CREATE TABLE IF NOT EXISTS `reservation` (
   `id_ligneProd` int(11) NOT NULL,
   PRIMARY KEY (`id_reservation`),
   KEY `reservation_ligneProd_FK` (`id_ligneProd`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Déchargement des données de la table `reservation`
 --
 
 INSERT INTO `reservation` (`id_reservation`, `dateDebut_reservation`, `dateFin_reservation`, `id_ligneProd`) VALUES
-(2, '2023-04-01', '2023-04-30', 1);
+(3, '2023-05-01', '2023-05-31', 1),
+(6, '2023-05-01', '2023-05-31', 2);
+
+--
+-- Déclencheurs `reservation`
+--
+DROP TRIGGER IF EXISTS `checkDejaReservee`;
+DELIMITER $$
+CREATE TRIGGER `checkDejaReservee` BEFORE INSERT ON `reservation` FOR EACH ROW BEGIN
+	DECLARE nbCol INT;
+    
+    SELECT COUNT(*) 
+    INTO nbCol 
+    FROM reservation
+    WHERE id_ligneProd = NEW.id_ligneProd
+    AND dateComprise(dateDebut_reservation, dateFin_reservation, NEW.dateDebut_reservation, NEW.dateFin_reservation);
+    
+    IF(nbCol > 0) THEN
+    	SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La ligne a déjà été réservée durant cette période.';
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -159,15 +169,15 @@ CREATE TABLE IF NOT EXISTS `tache` (
   KEY `tache_fournisseur0_FK` (`id_fournisseur`),
   KEY `tache_typeTache1_FK` (`id_typeTache`),
   KEY `Fk_tache_machine` (`id_machine`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Déchargement des données de la table `tache`
 --
 
 INSERT INTO `tache` (`id_tache`, `nom_tache`, `dateDebut_tache`, `dateFin_tache`, `id_reservation`, `id_fournisseur`, `id_typeTache`, `description_tache`, `id_machine`) VALUES
-(17, 'tache 1', '2023-04-05', '2023-04-20', 2, 1, 3, NULL, 1),
-(18, 'tache 2', '2023-04-21', '2023-04-27', 2, NULL, 2, 'voici une tâche incroyable', 1);
+(20, 'tache1', '2023-05-01', '2023-05-12', 3, NULL, 1, '', 1),
+(21, 'tache 2 ', '2023-05-13', '2023-05-19', 3, NULL, 1, NULL, 1);
 
 --
 -- Déclencheurs `tache`
@@ -175,31 +185,38 @@ INSERT INTO `tache` (`id_tache`, `nom_tache`, `dateDebut_tache`, `dateFin_tache`
 DROP TRIGGER IF EXISTS `dispoMachineInsert`;
 DELIMITER $$
 CREATE TRIGGER `dispoMachineInsert` BEFORE INSERT ON `tache` FOR EACH ROW BEGIN
-        DECLARE laMachine INT;
-        DECLARE laDateDebut DATE;
-        DECLARE laDateFin DATE;
-
-        SELECT NEW.id_machine INTO laMachine;
-        SELECT NEW.dateDebut_tache INTO laDateDebut;
-        SELECT NEW.dateFin_tache INTO laDateFin;
+        DECLARE nbCol INT;
         
-        CALL verificationDispoMachine(laMachine, laDateDebut, laDateFin);
-	END
+        SELECT COUNT(*)
+        INTO nbCol
+        FROM tache
+        WHERE id_machine = NEW.id_machine 
+        AND dateComprise(dateDebut_tache, dateFin_tache, NEW.dateDebut_tache , NEW.dateFin_tache );
+
+        IF nbCol > 0 THEN 
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Une tâche a déjà été attribuée sur la machine durant cette période.';
+        END IF;
+END
 $$
 DELIMITER ;
 DROP TRIGGER IF EXISTS `dispoMachineUpdate`;
 DELIMITER $$
 CREATE TRIGGER `dispoMachineUpdate` BEFORE UPDATE ON `tache` FOR EACH ROW BEGIN
-        DECLARE laMachine INT;
-        DECLARE laDateDebut DATE;
-        DECLARE laDateFin DATE;
+    DECLARE nbCol INT;
         
-        SELECT NEW.id_machine INTO laMachine;
-        SELECT NEW.dateDebut_tache INTO laDateDebut;
-        SELECT NEW.dateFin_tache INTO laDateFin;
-        
-        CALL verificationDispoMachine(laMachine, laDateDebut, laDateFin);
-	END
+    SELECT COUNT(*)
+    INTO nbCol
+    FROM tache
+    WHERE id_machine = NEW.id_machine
+    AND id_tache <> NEW.id_tache
+    AND dateComprise(dateDebut_tache, dateFin_tache, NEW.dateDebut_tache, NEW.dateFin_tache);
+
+    IF nbCol > 0 THEN 
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Une tâche a déjà été attribuée sur la machine durant cette période.';
+    END IF;
+END
 $$
 DELIMITER ;
 

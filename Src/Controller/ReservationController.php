@@ -25,12 +25,16 @@ class ReservationController
         } 
         else if($step == 'insert')
         {
-            if(!$this->insertReservation($fields))
+            try 
             {
-                header('Location:index.php?action=addReservation&step=form');
+                $this->insertReservation($fields);
             }
+            catch (PDOException $e)
+            {
+                $errorMessage = 'La ligne a déjà été réservée durant cette période.';
 
-            header('Location:index.php?action=printYearlyCalendar');
+                $this->addForm($fields, $errorMessage);
+            }
         }
         // If the step variable is incorrect
         else
@@ -44,8 +48,14 @@ class ReservationController
     /**
      * Print the form to add a reservation
      */
-    public function addForm()
+    public function addForm($fields = null, $errorMessage = null)
     {
+        if($errorMessage != null) require('Template/Error.php');
+
+        $reservationProdLine = isset($fields['taskService']) ? $fields['taskService'] : '';
+        $startDate = isset($fields['taskDate']) ? $fields['taskDate'] : '';
+        $endDate = isset($fields['endTaskDate']) ? $fields['endTaskDate'] : '';
+
         $prodLines = (new ProdLineManager())->getProdLines();
         require('Template/ReservationAdd.php');
     }

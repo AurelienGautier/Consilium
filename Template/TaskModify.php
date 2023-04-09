@@ -52,12 +52,12 @@
 
     <!-- Date de l'arrêt -->
     <label for="startkDate">Date du début de la tâche</label>
-    <input type="date" id="startDate" name="startDate" value=<?= htmlspecialchars($taskStartDate) ?> min=<?= htmlspecialchars($reservation->startDate) ?> max=<?= htmlspecialchars($reservation->endDate) ?> />
+    <input type="date" id="startDate" name="startDate" value="<?= htmlspecialchars($taskStartDate) ?>" min="<?= $reservation->startDate ?>" max=<?= htmlspecialchars($reservation->endDate) ?> />
     <br/>
 
     <!-- Date de fin de l'arrêt -->
     <label for="endDate">Date de fin de la tâche</label>
-    <input type="date" id="endDate" name="endDate" value=<?= htmlspecialchars($taskEndDate) ?> min=<?= htmlspecialchars($reservation->startDate) ?> max=<?= htmlspecialchars($reservation->endDate) ?> />
+    <input type="date" id="endDate" name="endDate" value="<?= htmlspecialchars($taskEndDate) ?>" min=<?= htmlspecialchars($reservation->startDate) ?> max=<?= htmlspecialchars($reservation->endDate) ?> />
     <br/>
 
     <!-- Description de la tâche -->
