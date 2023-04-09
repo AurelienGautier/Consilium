@@ -25,7 +25,16 @@ class TaskController
         }
         else if($step == 'insert')
         {
-            $this->insertTask($reservationId, $fields);
+            try 
+            {
+                $this->insertTask($reservationId, $fields);
+            }
+            catch(PDOException $e)
+            {
+                $errorMessage = 'Une tâche a déjà été attribuée sur la machine durant cette période.';
+
+                $this->printAddTaskForm($reservationId, $fields, $errorMessage);
+            }
         }
     }
 
@@ -36,15 +45,61 @@ class TaskController
      * 
      * @param int $reservationId The id of the reservation on which the task will be added
      */
-    private function printAddTaskForm(int $reservationId)
+    private function printAddTaskForm(int $reservationId, $fields = null, $errorMessage = null)
     {
+        if($errorMessage != null) include('Template/Error.php');
+
         $reservation = (new ReservationManager())->getReservation($reservationId);
         $prodLine = (new ProdLineManager())->getProdLine($reservation->prodLineId);
         $machines = (new MachineManager())->getMachinesFromProdLine($prodLine->id);
-        $taskTypes = (new TaskTypeManager())->getTaskTypes();
+        $types = (new TaskTypeManager())->getTaskTypes();
         $suppliers = (new SupplierManager())->getSuppliers();
 
-        require('Template/TaskAdd.php');
+        $taskName = isset($fields['name']) ? $fields['name'] : '';
+        $taskType = isset($fields['type']) ? $fields['type'] : '';
+        $taskMachine = isset($fields['machine']) ? $fields['machine'] : '';
+        $taskSupplier = isset($fields['supplier']) ? $fields['supplier'] : '';
+        $taskStartDate = isset($fields['startDate']) ? $fields['startDate'] : '';
+        $taskEndDate = isset($fields['endDate']) ? $fields['endDate'] : '';
+        $taskDescription = isset($fields['description']) ? $fields['description'] : '';
+
+        $title = '<h1>Ajout d\'une tâche sur la ligne '.$prodLine->name.'.</h1>';
+        $url = 'index.php?action=addTask&step=insert&reservationId='.$_GET['reservationId'];
+
+        require('Template/TaskModify.php');
+    }
+    
+    /************************************************************************************/
+    
+    /**
+     * Print the form to modify a task
+     * 
+     * @param int $taskId The id of the task to modify
+     */
+    private function modifyForm(int $taskId, $fields = null, $errorMessage = null)
+    {
+        if($errorMessage != null) include('Template/Error.php');
+
+        $task = (new TaskManager())->getTask($taskId);
+
+        $reservation = (new ReservationManager())->getReservation($task->reservationId);
+        $prodLine = (new ProdLineManager())->getProdLine($reservation->prodLineId);
+        $machines = (new MachineManager())->getMachinesFromProdLine($prodLine->id);
+        $types = (new TaskTypeManager())->getTaskTypes();
+        $suppliers = (new SupplierManager())->getSuppliers();
+
+        $taskName = isset($fields['name']) ? $fields['name'] : $task->name;
+        $taskType = isset($fields['type']) ? $fields['type'] : $task->type;
+        $taskMachine = isset($fields['machine']) ? $fields['machine'] : $task->machineId;
+        $taskSupplier = isset($fields['supplier']) ? $fields['supplier'] : $task->supplierId;
+        $taskStartDate = isset($fields['startDate']) ? $fields['startDate'] : $task->startDate;
+        $taskEndDate = isset($fields['endDate']) ? $fields['endDate'] : $task->endDate;
+        $taskDescription = isset($fields['description']) ? $fields['description'] : $task->description;
+
+        $title = '<h1>Modification d\'une tâche sur la ligne '.$prodLine->name.'.</h1>';
+        $url = "index.php?action=modifyTask&step=insert&taskId=$task->id";
+
+        require('Template/TaskModify.php');
     }
 
     /************************************************************************************/
@@ -67,7 +122,7 @@ class TaskController
             $fields['supplier'],
             $fields['machine']
         );
-
+    
         header('Location:index.php?action=printYearlyCalendar');
     }
 
@@ -88,28 +143,17 @@ class TaskController
         }
         else if($step == 'insert')
         {
-            $this->update($taskId, $fields);
+            try 
+            {
+                $this->update($taskId, $fields);
+            }
+            catch(PDOException $e)
+            {
+                $errorMessage = 'Une tâche a déjà été attribuée sur la machine durant cette période.';
+
+                $this->modifyForm($taskId, $fields, $errorMessage);
+            }
         }
-    }
-
-    /************************************************************************************/
-
-    /**
-     * Print the form to modify a task
-     * 
-     * @param int $taskId The id of the task to modify
-     */
-    private function modifyForm(int $taskId)
-    {
-        $task = (new TaskManager())->getTask($taskId);
-        $reservation = (new ReservationManager())->getReservation($task->reservationId);
-        $prodLine = (new ProdLineManager())->getProdLine($reservation->prodLineId);
-        $suppliers = (new SupplierManager())->getSuppliers();
-        $taskType = (new TaskTypeManager())->getTaskTypes();
-        $machines = (new MachineManager())->getMachinesFromProdLine($prodLine->id);
-        $taskTypes = (new TaskTypeManager())->getTaskTypes();
-
-        require('Template/TaskModify.php');
     }
 
     /************************************************************************************/
