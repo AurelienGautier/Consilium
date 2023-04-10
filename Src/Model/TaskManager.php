@@ -194,6 +194,41 @@ class TaskManager
 
     /************************************************************************************/
 
+    public function getTasksToChange($idReservation, $startDate, $endDate)
+    {
+        $ch = 'SELECT id_tache,
+                      nom_tache,
+                      dateDebut_tache,
+                      dateFin_tache
+               FROM tache
+               WHERE id_reservation = :id_reservation
+               AND NOT (dateDebut_tache >= :startDate AND dateFin_tache <= :endDate)';
+        
+        $request = $this->db->prepare($ch);
+        $request->bindValue(':id_reservation', $idReservation, PDO::PARAM_INT);
+        $request->bindValue(':startDate', $startDate, PDO::PARAM_STR);
+        $request->bindValue(':endDate', $endDate, PDO::PARAM_STR);
+        $request->execute();
+
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+        $tasks = array();
+
+        for($i = 0; $i < count($result); $i++)
+        {
+            $tasks[$i] = new Task();
+
+            $tasks[$i]->id = $result[$i]['id_tache'];
+            $tasks[$i]->name = $result[$i]['nom_tache'];
+            $tasks[$i]->startDate = $result[$i]['dateDebut_tache'];
+            $tasks[$i]->endDate = $result[$i]['dateFin_tache'];
+        }
+
+        return $tasks;
+    }
+
+    /************************************************************************************/
+
     public function insertTask(
         $name = null,
         $description = null,

@@ -134,7 +134,7 @@ class ReservationController
      */
     private function update(int $reservationId, array $fields)
     {
-        $tasks = (new TaskManager())->getTasksByReservation($reservationId);
+        $tasks = (new TaskManager())->getTasksToChange($reservationId, $fields['startDate'], $fields['endDate']);
 
         if(!empty($tasks) && !isset($_GET['taskModified'])) 
         {

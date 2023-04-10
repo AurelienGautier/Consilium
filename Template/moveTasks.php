@@ -11,12 +11,12 @@
 
             <div>
                 <label for="start<?= $key ?>">Date de début de la tâche</label>
-                <input id="start<?= $key ?>" type="date" min="<?= $fields['startDate'] ?>" max="<?= $fields['endDate'] ?>" name="taskStartDate[]">
+                <input id="start<?= $key ?>" type="date" min="<?= $fields['startDate'] ?>" max="<?= $fields['endDate'] ?>" name="taskStartDate[]" value="<?= $task->startDate ?>">
             </div>
 
             <div>
                 <label for="end<?= $key ?>">Date de fin de la tâche</label>
-                <input id="end<?= $key ?>" type="date" min="<?= $fields['startDate'] ?>" max="<?= $fields['endDate'] ?>" name="taskEndDate[]">
+                <input id="end<?= $key ?>" type="date" min="<?= $fields['startDate'] ?>" max="<?= $fields['endDate'] ?>" name="taskEndDate[]" value="<?= $task->endDate ?>">
             </div>
         </div>
     <?php } ?>
